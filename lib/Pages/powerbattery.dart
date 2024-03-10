@@ -32,22 +32,7 @@ class _PowerBatteryState extends State<PowerBattery> {
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-          backgroundColor: Colors.green,
-          title: Text('Порты', style: TextStyle(fontSize: 30, color: Colors.white, fontStyle: FontStyle.italic),),
-          centerTitle: true,
-          leading: IconButton(
-              onPressed: (){
-                _openMenu();
-              },
-              icon: Icon(Icons.menu))
-      ),
-      body: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [Column(mainAxisAlignment: MainAxisAlignment.center,
-              children: [Text('Виртуальный COM9', style: TextStyle(color: Colors.red, fontSize: 30),)]),]
-      ),
+
     );
   }
 }

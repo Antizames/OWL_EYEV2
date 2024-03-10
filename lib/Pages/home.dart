@@ -4,7 +4,8 @@ import 'package:latlong2/latlong.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
 import 'dart:math';
-
+import 'dart:typed_data';
+import 'package:usb_serial/usb_serial.dart';
 class Setup extends StatefulWidget {
   @override
   State<Setup> createState() => _SetupState();
@@ -23,7 +24,37 @@ class _SetupState extends State<Setup> {
   int _currentPointIndex = 0; // Индекс стартовой точки
   double progress = 0;
   LatLng? animatedMarkerPoint; // Текущая позиция маркера
+  Future<void> sendMSPMessage(List<int> mspMessage) async {
+    List<UsbDevice> devices = await UsbSerial.listDevices();
+    print("${devices.length} USB devices found");
 
+    if (devices.isNotEmpty) {
+      UsbDevice device = devices.first;
+
+      UsbPort? port = await device.create();
+      if(port == null) {
+        print("Не удалось открыть порт");
+        return;
+      }
+      bool openResult = await port.open();
+      if (!openResult) {
+        print("Не удалось открыть соединение");
+        return;
+      }
+      port.setDTR(true);
+      port.setRTS(true);
+
+      port.setPortParameters(57600, UsbPort.DATABITS_8, UsbPort.STOPBITS_1, UsbPort.PARITY_NONE);
+      port.write(Uint8List.fromList(mspMessage));
+      await Future.delayed(Duration(milliseconds: 500)); // Ждем, пока данные передадутся
+
+      // Закрываем соединение
+      await port.close();
+      print("Соединение закрыто");
+    } else {
+      print("USB устройства не найдены");
+    }
+  }
   // Метод для запуска анимации
   void _animateObject() {
     if (points.isEmpty || points.length < 2) {
@@ -32,7 +63,9 @@ class _SetupState extends State<Setup> {
       );
       return;
     }
-    // Возможно, установка начального положения маркера:
+    for(int i = 0; i < points.length; i++){
+      sendMSPMessage(buildMSP(points[i], 201));
+    }
     animatedMarkerPoint = points.first;
 
     final int totalPoints = points.length;
@@ -80,7 +113,6 @@ class _SetupState extends State<Setup> {
       return spiralPoints;
     }
 
-    // Calculate the centroid of the polygon
     double cx = 0, cy = 0;
     for (LatLng point in polygonPoints) {
       cx += point.latitude;
@@ -89,7 +121,6 @@ class _SetupState extends State<Setup> {
     cx /= polygonPoints.length;
     cy /= polygonPoints.length;
 
-    // Determine the maximum distance from the centroid to any vertex to calculate the spiral bounds
     double maxRadius = 0;
     for (LatLng point in polygonPoints) {
       double distance = sqrt(pow(point.latitude - cx, 2) + pow(point.longitude - cy, 2));
@@ -98,7 +129,6 @@ class _SetupState extends State<Setup> {
       }
     }
 
-    // Configuration for the spiral
     LatLng startPoint = polygonPoints.first;
     double startRadius = sqrt(pow(startPoint.latitude - cx, 2) + pow(startPoint.longitude - cy, 2));
     double deltaRadius = maxRadius/70; // Decrease/increase to control the tightness of the spiral
@@ -114,21 +144,45 @@ class _SetupState extends State<Setup> {
       double py = newLongitude;
       radius += deltaRadius;
       angle -= deltaAngle;
-      newLatitude = px + radius * sin(angle)*0.6;
-      newLongitude = py + radius * cos(angle);
-      deltaRadius *= 1.003;
+      newLatitude = px + 1.5*radius * sin(angle)*0.6;
+      newLongitude = py + 1.5*radius * cos(angle);
+      deltaRadius *= 1.005;
     }
 
     return spiralPoints;
   }
+  List<int> buildMSP(LatLng coordinates, command) {
+
+    // Преобразование широты и долготы в бинарный формат
+    int lat = (coordinates.latitude * 10000).round();
+    int lon = (coordinates.longitude * 10000).round();
+
+    // Создаем буфер данных
+    var dataBytes = ByteData(8);
+    dataBytes.setInt32(0, lat, Endian.little); // 4 байта для широты
+    dataBytes.setInt32(4, lon, Endian.little); // 4 байта для долготы
+
+    int dataSize = 8;
+    int checksum = 0;
+
+    List<int> message = [0x24, 0x4D, 0x3C, dataSize, command];
+    checksum ^= dataSize;
+    checksum ^= command;
+
+    // Добавляем данные и вычисляем контрольную сумму
+    for (int i = 0; i < dataSize; i++) {
+      message.add(dataBytes.getUint8(i));
+      checksum ^= dataBytes.getUint8(i);
+    }
+
+    message.add(checksum);
+    return message;
+  }
   List<LatLng> generateZigZagPath(List<LatLng> polygonPoints, double spacing) {
-    // В данном примере предполагается, что polygonPoints образуют прямоугольник
-    // и передаются в следующем порядке: левый нижний, правый нижний, правый верхний, левый верхний
 
     List<LatLng> pathPoints = [];
 
     if (polygonPoints.length != 4) {
-      // Обработка ошибок или другой код для не прямоугольных полигонов
       return pathPoints;
     }
 
@@ -296,19 +350,16 @@ class _SetupState extends State<Setup> {
           FloatingActionButton(
             child: Icon(Icons.auto_mode),
             onPressed: () {
-              // Add logic to create spiral trajectory
               if (points.length < 3) {
-                // Ensure at least 3 points to form a polygon
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text("Отметьте от 3 маркеров на карте для отображения выбранной территории")),
                 );
               } else {
                 List<LatLng> spiralPoints = generateSpiralPoints(points);
 
-                // Update the state with the new set of points forming the spiral trajectory
                 setState(() {
                   _resetMarkers();
-                  points.addAll(spiralPoints); // Add spiral points to the list
+                  points.addAll(spiralPoints);
                 });
               }
             },
@@ -317,14 +368,12 @@ class _SetupState extends State<Setup> {
           FloatingActionButton(
             child: Icon(Icons.square),
             onPressed: () {
-              // Add logic to create spiral trajectory
 
                 List<LatLng> spiralPoints = generateZigZagPath(points, 0.2);
 
-                // Update the state with the new set of points forming the spiral trajectory
                 setState(() {
                   _resetMarkers();
-                  points.addAll(spiralPoints); // Add spiral points to the list
+                  points.addAll(spiralPoints);
                 });
               },
           )
