@@ -29,7 +29,7 @@ Dive into the world of OWL EYE and start enhancing your drone configuration expe
 
 1. Clone the Repository:
    
-   git clone https://github.com/Argon228/OWL_EYEV2/tree/master
+   git clone [https://github.com/Antizames/OWL_EYEV2](https://github.com/Antizames/OWL_EYEV2)
    
 2. Navigate to the OWL-EYE Directory:
    
