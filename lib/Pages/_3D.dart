@@ -24,7 +24,23 @@ class _3DState extends State<tree_D> {
   final TextEditingController _controllerRoll = TextEditingController();
   final TextEditingController _controllerPitch = TextEditingController();
   final TextEditingController _controllerYaw = TextEditingController();
-
+  void _openMenu(){
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (BuildContext context){
+          return Drawer(
+              child: new ListView(
+                children: <Widget>[
+                  ListTile(
+                    title: const Text('Навигация',style: TextStyle(fontSize: 26),),
+                    onTap: () {Navigator.pushReplacementNamed(context, '/');},
+                  ),
+                  ListTile(title: const Text('Конфигурация',style: TextStyle(fontSize: 26),),onTap: () {Navigator.pushReplacementNamed(context, '/3d');}),
+                  Divider(color: Colors.black87),
+                  ListTile(title: const Text('Сообщить об ошибке',style: TextStyle(fontSize: 26),),onTap: () {}),
+                ],));
+        })
+    );
+  }
   @override
   void initState() {
     super.initState();
@@ -57,7 +73,7 @@ class _3DState extends State<tree_D> {
           Padding(padding: EdgeInsets.all(20)),
           Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
             DeformableButton(
-              onPressed: (){print('Button pressed');},
+              onPressed: (){_openMenu();},
               child: Icon(Icons.menu, color: Colors.grey.shade600),
               gradient: LinearGradient(
                   colors: <Color>[Color.fromARGB(255, 46, 51, 56), Color.fromARGB(255, 30, 33, 36,)],

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -19,11 +21,22 @@ class _SetupState extends State<Setup> {
       points.add(latlng);
     });
   }
+  void _handleLongPress() {
+      draggableScrollableController.animateTo(
+        0.1, // Минимальный размер. Укажите нужное значение.
+        duration: Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+  }
   var polylines;
   Timer? _timer;
   int _currentPointIndex = 0; // Индекс стартовой точки
   double progress = 0;
   LatLng? animatedMarkerPoint; // Текущая позиция маркера
+  final DraggableScrollableController draggableScrollableController = DraggableScrollableController();
+  final double initialChildSize = 0.3; // Исходный размер DraggableScrollableSheet
+  bool isPressedDown = false; // Флаг для отслеживания перетаскивания
+  Duration delayDuration = Duration(milliseconds: 30); // Задержка перед скрытием меню
   Future<void> sendMSPMessage(List<int> mspMessage) async {
     List<UsbDevice> devices = await UsbSerial.listDevices();
     print("${devices.length} USB devices found");
@@ -276,11 +289,7 @@ class _SetupState extends State<Setup> {
                     title: const Text('Навигация',style: TextStyle(fontSize: 26),),
                     onTap: () {Navigator.pushReplacementNamed(context, '/');},
                   ),
-                  ListTile(title: const Text('Конфигурация',style: TextStyle(fontSize: 26),),onTap: () {Navigator.pushReplacementNamed(context, '/conf');}),
-                  ListTile(title: const Text('Отказобезопасность',style: TextStyle(fontSize: 26),),onTap: () {Navigator.pushNamed(context, '/fail');}),
-                  ListTile(title: const Text('Питание и Батарея',style: TextStyle(fontSize: 26),),onTap: () {Navigator.pushReplacementNamed(context, '/poba');}),
-                  ListTile(title: const Text('Порты',style: TextStyle(fontSize: 26),),onTap: () {Navigator.pushReplacementNamed(context, '/port');}),
-                  ListTile(title: const Text('Видео',style: TextStyle(fontSize: 26),),onTap: () {Navigator.pushReplacementNamed(context, '/vid');}),
+                  ListTile(title: const Text('Конфигурация',style: TextStyle(fontSize: 26),),onTap: () {Navigator.pushReplacementNamed(context, '/3d');}),
                   Divider(color: Colors.black87),
                   ListTile(title: const Text('Сообщить об ошибке',style: TextStyle(fontSize: 26),),onTap: () {}),
                 ],));
@@ -302,83 +311,244 @@ class _SetupState extends State<Setup> {
       );
     }
     return Scaffold(
-      appBar: AppBar(
-          leading: IconButton(
-              onPressed: () {
-                _openMenu();
-              },
-              icon: Icon(Icons.menu))
-      ),
-      body: FlutterMap(
-        mapController: mapController,
-        options: MapOptions(
-          center: LatLng(55.8, 37.43),
-          zoom: 15.0,
-          onTap: (_, latlng) => _handleTap(latlng),
-        ),
-        children: [
-          TileLayer(
-            urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-            subdomains: ['a', 'b', 'c'],
-          ),
-          PolylineLayer(
-            polylines: polylines,
-          ),
-          MarkerLayer(
-            markers: markers,
-          ),
-        ],
-      ),
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+      body: Stack(
         children: <Widget>[
-          FloatingActionButton(
-            onPressed: _animateObject, // Запуск анимации по нажатию
-            child: Icon(Icons.play_arrow),
-            tooltip: 'Начать полётное задание',
-            backgroundColor: Colors.blue,
+          Listener(
+            onPointerDown: (details) {
+              isPressedDown = true;
+              Future.delayed(delayDuration).then((_) {
+                if (isPressedDown) { // Если пользователь все еще удерживает нажатие
+                  draggableScrollableController.animateTo(
+                    0.01, // Минимизируем размер DraggableScrollableSheet
+                    duration: Duration(milliseconds: 500),
+                    curve: Curves.easeInOut,
+                  );
+                }
+              });
+            },
+            onPointerUp: (details) {
+              isPressedDown = false; // Сброс флага при отпускании
+              draggableScrollableController.animateTo(
+                initialChildSize, // Возвращаем DraggableSheet к исходному размеру
+                duration: Duration(milliseconds: 500),
+                curve: Curves.easeInOut,
+              );
+            },
+            child: FlutterMap(
+              mapController: mapController,
+              options: MapOptions(
+                center: LatLng(55.8, 37.43),
+                zoom: 15.0,
+                onTap: (_, latlng) => _handleTap(latlng)
+              ),
+              children: [
+                TileLayer(
+                  urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  subdomains: ['a', 'b', 'c'],
+                ),
+                PolylineLayer(
+                  polylines: polylines,
+                ),
+                MarkerLayer(
+                  markers: markers,
+                ),
+              ],
+            ),
           ),
-          SizedBox(height: 10, width: 10,),
-          FloatingActionButton(
-            onPressed: _resetMarkers,
-            child: Icon(Icons.delete),
-            tooltip: 'Сбросить маркеры',
-            backgroundColor: Colors.red,
-            heroTag: 'reset',
+          Positioned(
+            top: 0,
+            left: 0,
+            child: Container(
+              width: 640, // Обратите внимание на ширину и высоту вашего контейнера
+              height: 100,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color.fromARGB(255, 52, 57, 63),
+                    Color.fromARGB(255, 52, 57, 63).withOpacity(0.8),
+                    Color.fromARGB(255, 52, 57, 63).withOpacity(0.7),
+                    Color.fromARGB(255, 52, 57, 63).withOpacity(0.55),
+                    Color.fromARGB(255, 52, 57, 63).withOpacity(0.4),
+                    Color.fromARGB(255, 52, 57, 63).withOpacity(0.25),
+                    Color.fromARGB(255, 52, 57, 63).withOpacity(0.1),
+                    Color.fromARGB(255, 52, 57, 63).withOpacity(0.05),
+                    Colors.transparent,
+                  ],
+                  stops: [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.7, 0.8, 1],
+                ),
+              ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: SizedBox(
+                  width: 56, // Ширина и высота FloatingActionButton
+                  height: 56,
+                  child: FloatingActionButton(
+                    onPressed: () {_openMenu();},
+                    child: Icon(Icons.menu),
+                    backgroundColor: Colors.transparent, // Прозрачный фон
+                    elevation: 0, // Убрать тень
+                    splashColor: Colors.transparent, // Прозрачный цвет всплеска
+                  ),
+                ),
+              ),
+            ),
           ),
-          SizedBox(height: 10, width: 10,),
-          FloatingActionButton(
-            child: Icon(Icons.auto_mode),
-            onPressed: () {
-              if (points.length < 3) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Отметьте от 3 маркеров на карте для отображения выбранной территории")),
-                );
-              } else {
-                List<LatLng> spiralPoints = generateSpiralPoints(points);
+          DraggableScrollableSheet(
+            controller: draggableScrollableController,
+            initialChildSize: 0.3,
+            minChildSize: 0.01,
+            maxChildSize: 0.3,
+            builder: (BuildContext context, ScrollController scrollController) {
+              return Container(
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        colors: [Color.fromARGB(255, 52, 57, 63), Color.fromARGB(255, 22, 23, 27,)],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter)
+                ),
+                child: GridView.count(
+                  controller: scrollController,
+                  scrollDirection: Axis.vertical,
+                  crossAxisCount: 1,
+                  crossAxisSpacing: 10.0,
+                  mainAxisSpacing: 10.0,
+                  childAspectRatio: (400/60),
+                  children: <Widget>[
+                    GradientBorderButton(text: 'Полёт по периметру',
+                        buttonColors: <Color>[Color.fromARGB(255, 46, 51, 56), Color.fromARGB(255, 30, 33, 36,)],
+                        borderColors: <Color>[Color.fromARGB(255, 8, 231, 53), Color.fromARGB(255, 93, 249,140), Color.fromARGB(255,169, 255, 112)],
+                        onPressed: _animateObject,
+                        width: 150,
+                        height: 60,
+                    toolTip: false,),
+                    GradientBorderButton(text: 'Сбросить маркеры',
+                      buttonColors: <Color>[Color.fromARGB(255, 46, 51, 56), Color.fromARGB(255, 30, 33, 36,)],
+                      borderColors: <Color>[Color.fromARGB(255, 251, 14, 14), Color.fromARGB(255, 249, 93, 93,), Color.fromARGB(255, 227, 2, 2)],
+                      onPressed: _resetMarkers,
+                      width: 150,
+                      height: 60,
+                      toolTip: false,),
+                    GradientBorderButton(text: 'Спиральная траектория',
+                      buttonColors: <Color>[Color.fromARGB(255, 46, 51, 56), Color.fromARGB(255, 30, 33, 36,)],
+                      borderColors: <Color>[Color.fromARGB(255, 2, 96, 164), Color.fromARGB(255, 25, 160, 236)],
+                      onPressed: () {
+                        if (points.length < 3) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Отметьте от 3 маркеров на карте для отображения выбранной территории")),
+                          );
+                        } else {
+                          List<LatLng> spiralPoints = generateSpiralPoints(points);
 
-                setState(() {
-                  _resetMarkers();
-                  points.addAll(spiralPoints);
-                });
-              }
+                          setState(() {
+                            _resetMarkers();
+                            points.addAll(spiralPoints);
+                          });
+                        }
+                      },
+                      width: 150,
+                      height: 60,
+                      toolTip: false,)
+                  ],
+                ),
+              );
             },
           ),
-          SizedBox(height: 10, width: 10,),
-          FloatingActionButton(
-            child: Icon(Icons.square),
-            onPressed: () {
-
-                List<LatLng> spiralPoints = generateZigZagPath(points, 0.2);
-
-                setState(() {
-                  _resetMarkers();
-                  points.addAll(spiralPoints);
-                });
-              },
-          )
         ],
       ),
     );
   }
 }
+class GradientBorderButton extends StatefulWidget {
+  final String text;
+  final List<Color> buttonColors;
+  final List<Color> borderColors;
+  final String tooltipMessage;
+  final VoidCallback onPressed;
+  final bool toolTip;
+  final double width; // Убираем необязательность этих параметров
+  final double height;
+
+  const GradientBorderButton({
+    Key? key,
+    required this.text,
+    required this.buttonColors,
+    required this.borderColors,
+    this.tooltipMessage = '',
+    required this.onPressed,
+    this.toolTip = true,
+    required this.width, // Теперь параметры обязательны
+    required this.height,
+  }) : super(key: key);
+
+  @override
+  State<GradientBorderButton> createState() => _GradientBorderButtonState();
+}
+
+class _GradientBorderButtonState extends State<GradientBorderButton> {
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox( // Используем SizedBox для задания фиксированного размера
+      width: widget.width,
+      height: widget.height,
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: widget.borderColors,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        padding: EdgeInsets.all(2),
+        margin: const EdgeInsets.all(4),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: widget.onPressed,
+            onLongPress: widget.toolTip ? () {
+              final overlay = Overlay.of(context);
+              final renderBox = context.findRenderObject() as RenderBox;
+              final size = renderBox.size;
+              final offset = renderBox.localToGlobal(Offset.zero);
+
+              OverlayEntry? entry;
+              entry = OverlayEntry(
+                builder: (context) => Positioned(
+                  left: offset.dx,
+                  top: offset.dy - size.height / 2,
+                  child: Material(
+                    color: Colors.transparent,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.7),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      child: Text(widget.tooltipMessage, style: TextStyle(color: Colors.white)),
+                    ),
+                  ),
+                ),
+              );
+              overlay.insert(entry);
+              Future.delayed(Duration(seconds: 2), () => entry?.remove());
+            } : null,
+            borderRadius: BorderRadius.circular(10),
+            child: Ink(
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      colors: widget.buttonColors,
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Center(child: Text(widget.text, style: TextStyle(fontSize: 14, color: Colors.white))),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
