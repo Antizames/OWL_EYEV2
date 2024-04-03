@@ -30,8 +30,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_map:
   latlong2: ^0.8.1
+  flutter_map:
   flutter_map_line_editor:
   google_fonts:
   flutter_bloc:
@@ -40,7 +40,8 @@ dependencies:
   permission_handler:
   cached_network_image: ^3.3.0
   flutter_glow: ^0.3.0
-
+  flutter_svg:
+  flutter_map_dragmarker:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
@@ -68,9 +69,10 @@ flutter:
   uses-material-design: true
 
   assets:
-    - Assets/Images/Phon.png
-    - Assets/Images/savePhon.png
-
+    - Assets/Images/P3rka.svg
+    - Assets/Images/Sp1ralka.svg
+    - Assets/Images/halfD.svg
+    - Assets/Images/D1Dron4i.svg
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

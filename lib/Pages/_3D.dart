@@ -24,21 +24,79 @@ class _3DState extends State<tree_D> {
   final TextEditingController _controllerRoll = TextEditingController();
   final TextEditingController _controllerPitch = TextEditingController();
   final TextEditingController _controllerYaw = TextEditingController();
-  void _openMenu(){
-    Navigator.of(context).push(
-        MaterialPageRoute(builder: (BuildContext context){
-          return Drawer(
-              child: new ListView(
-                children: <Widget>[
-                  ListTile(
-                    title: const Text('Навигация',style: TextStyle(fontSize: 26),),
-                    onTap: () {Navigator.pushReplacementNamed(context, '/');},
-                  ),
-                  ListTile(title: const Text('Конфигурация',style: TextStyle(fontSize: 26),),onTap: () {Navigator.pushReplacementNamed(context, '/3d');}),
-                  Divider(color: Colors.black87),
-                  ListTile(title: const Text('Сообщить об ошибке',style: TextStyle(fontSize: 26),),onTap: () {}),
-                ],));
-        })
+  void _openSidebarMenu(BuildContext context) {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (context, animation, secondaryAnimation) => throw UnimplementedError(),
+      barrierDismissible: false, // Сделаем нашу затемненную область действующей вручную
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierColor: Colors.transparent, // Прозрачный цвет, т.к. обработка вручную
+      transitionDuration: const Duration(milliseconds: 300),
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        final tween = Tween<Offset>(begin: const Offset(-1, 0), end: Offset.zero);
+        final offsetAnimation = animation.drive(tween);
+
+        return Stack(
+          children: <Widget>[
+            GestureDetector(
+              // Затемненный фон за меню
+              onTap: () => Navigator.pop(context), // Закрытие меню
+              child: FadeTransition(
+                opacity: animation,
+                child: Container(
+                  color: Colors.black.withOpacity(0.5),
+                ),
+              ),
+            ),
+            SlideTransition(
+              position: offsetAnimation,
+              child: _buildSidebarMenu(context),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildSidebarMenu(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.only(
+        topRight: Radius.circular(13), // Применяем скругление к Material
+        bottomRight: Radius.circular(13),
+      ),
+      child: Material(
+        // Это обеспечивает правильные тему и отображение текста кнопок
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.8, // ширина панели, например 80% от ширины экрана
+          height: MediaQuery.of(context).size.height, // на всю высоту
+          color: Colors.white, // Цвет фона контейнера
+          child: Column(
+            children: [
+              Padding(padding: EdgeInsets.all(10)),
+              ListTile(
+                leading: Icon(Icons.navigation),
+                title: Text('Навигация'),
+                onTap: () {
+                  Navigator.pushReplacementNamed(context, '/');
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.settings),
+                title: Text('Конфигурация'),
+                onTap: () {
+                  Navigator.pushReplacementNamed(context, '/3d');
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.report_problem),
+                title: Text('Сообщить об ошибке'),
+                onTap: () {
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
   @override
@@ -64,7 +122,7 @@ class _3DState extends State<tree_D> {
         Container(
           decoration: BoxDecoration(
               gradient: LinearGradient(
-                  colors: [Color.fromARGB(255, 52, 57, 63), Color.fromARGB(255, 22, 23, 27,)],
+                  colors: [Color.fromARGB(255, 233, 237, 245), Color.fromARGB(255, 149, 152, 158,)],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter)),
 
@@ -73,34 +131,34 @@ class _3DState extends State<tree_D> {
           Padding(padding: EdgeInsets.all(20)),
           Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
             DeformableButton(
-              onPressed: (){_openMenu();},
+              onPressed: (){_openSidebarMenu(context);},
               child: Icon(Icons.menu, color: Colors.grey.shade600),
               gradient: LinearGradient(
-                  colors: <Color>[Color.fromARGB(255, 46, 51, 56), Color.fromARGB(255, 30, 33, 36,)],
+                  colors: <Color>[Color.fromARGB(255, 233, 237, 245), Color.fromARGB(255, 149, 152, 158,)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight
               ),
             ),
             Column(children: [
               Text('Дрон', style: TextStyle(fontSize: 15, color: Colors.grey),),
-              GlowText('Конфигурация', style: TextStyle(fontSize: 15, color: Colors.white),glowColor: Colors.white,offset: Offset(0, -0.5),),
+              GlowText('Конфигурация', style: TextStyle(fontSize: 15, color: Colors.black),glowColor: Colors.black,offset: Offset(0, -0.5),),
             ],),
             DeformableButton(
               onPressed: (){print('Button pressed');},
               child: Icon(Icons.save, color: Colors.grey.shade600,),
               gradient: LinearGradient(
-                  colors: <Color>[Color.fromARGB(255, 46, 51, 56), Color.fromARGB(255, 30, 33, 36,)],
+                  colors: <Color>[Color.fromARGB(255, 233, 237, 245), Color.fromARGB(255, 149, 152, 158,)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight
               ),
             ),
           ]),
           Padding(padding: EdgeInsets.all(10)),
-          Container(width: 345, height: 80, alignment: Alignment.centerLeft, child: Text('System Configuration', style: TextStyle(color: Colors.white, fontSize: 24),),),
-          Container(width: 345, height: 30, alignment: Alignment.centerLeft, child: Text('Gyro update', style: TextStyle(color: Colors.white, fontSize: 18),),),
+          Container(width: 345, height: 80, alignment: Alignment.centerLeft, child: Text('System Configuration', style: TextStyle(color: Colors.black, fontSize: 24),),),
+          Container(width: 345, height: 30, alignment: Alignment.centerLeft, child: Text('Gyro update', style: TextStyle(color: Colors.black, fontSize: 18),),),
           Container(alignment: Alignment.centerLeft, width: 350, height: 40,
             child: Padding(padding: EdgeInsets.only(left: 10),child: Text('12.00 kHz', style: TextStyle(color: Colors.grey),),),
-            decoration: BoxDecoration(color: Colors.white,
+            decoration: BoxDecoration(color: Colors.black,
                 borderRadius: BorderRadius.horizontal(
                   left: Radius.circular(7),
                   right: Radius.circular(7),// Скругление слева
@@ -109,9 +167,9 @@ class _3DState extends State<tree_D> {
                 border: Border.all(color: Color.fromARGB(255, 109, 113, 120), width: 1)),
           ),
           Padding(padding: EdgeInsets.all(10)),
-          Container(width: 345, height: 30, alignment: Alignment.centerLeft, child: Text('PID', style: TextStyle(color: Colors.white, fontSize: 18),),),
+          Container(width: 345, height: 30, alignment: Alignment.centerLeft, child: Text('PID', style: TextStyle(color: Colors.black, fontSize: 18),),),
           Container(width: 350, height: 40,
-              decoration: BoxDecoration(color: Colors.white,
+              decoration: BoxDecoration(color: Colors.black,
                   borderRadius: BorderRadius.horizontal(
                     left: Radius.circular(7),
                     right: Radius.circular(7),// Скругление слева
@@ -149,33 +207,33 @@ class _3DState extends State<tree_D> {
           Container(width: 350, height: 60,
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Accelerometer', style: TextStyle(color: Colors.white, fontSize: 18),),
+                Text('Accelerometer', style: TextStyle(color: Colors.black, fontSize: 18),),
                 Switch(value: switchValue, onChanged: (value){setState(() {
                   switchValue = value;
-                });}, activeColor: Colors.white,  inactiveThumbColor: Colors.grey.shade100, activeTrackColor: Color.fromARGB(255,16,162,245), inactiveTrackColor: Color.fromARGB(255,127,132,137),)
+                });}, activeColor: Colors.white70,  inactiveThumbColor: Colors.grey, activeTrackColor: Color.fromARGB(255,252,128,33), inactiveTrackColor: Colors.white70,)
               ],),
           ),
           Container(width: 350, height: 60,
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Barometer', style: TextStyle(color: Colors.white, fontSize: 18),),
+                Text('Barometer', style: TextStyle(color: Colors.black, fontSize: 18),),
                 Switch(value: switchValue1, onChanged: (value){setState(() {
                   switchValue1 = value;
-                });}, activeColor: Colors.white,  inactiveThumbColor: Colors.grey.shade100, activeTrackColor: Color.fromARGB(255,16,162,245), inactiveTrackColor: Color.fromARGB(255,127,132,137),)
+                });}, activeColor: Colors.white70,  inactiveThumbColor: Colors.grey, activeTrackColor: Color.fromARGB(255,252,128,33), inactiveTrackColor: Colors.white70,)
               ],),
           ),
           Container(width: 350, height: 60,
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Magnetometer', style: TextStyle(color: Colors.white, fontSize:18),),
+                Text('Magnetometer', style: TextStyle(color: Colors.black, fontSize:18),),
                 Switch(value: switchValue2, onChanged: (value){setState(() {
                   switchValue2 = value;
-                });}, activeColor: Colors.white,  inactiveThumbColor: Colors.grey.shade100, activeTrackColor: Color.fromARGB(255,16,162,245), inactiveTrackColor: Color.fromARGB(255,127,132,137),)
+                });}, activeColor: Colors.white70,  inactiveThumbColor: Colors.grey, activeTrackColor: Color.fromARGB(255,252,128,33), inactiveTrackColor: Colors.white70,)
               ],),
           ),
           Padding(padding: EdgeInsets.all(10)),
-          Container(width: 350, height: 80, alignment: Alignment.centerLeft, child: Text('Board and Sensor Aligment', style: TextStyle(color: Colors.white, fontSize: 24),),),
-          Container(width: 350, height: 40, alignment: Alignment.centerLeft, child: Text('Roll Degrees', style: TextStyle(color: Colors.white, fontSize: 18),),),
+          Container(width: 350, height: 80, alignment: Alignment.centerLeft, child: Text('Board and Sensor Aligment', style: TextStyle(color: Colors.black, fontSize: 24),),),
+          Container(width: 350, height: 40, alignment: Alignment.centerLeft, child: Text('Roll Degrees', style: TextStyle(color: Colors.black, fontSize: 18),),),
           Padding(padding: EdgeInsets.all(10)),
           RollTextField(
             controller: _controllerRoll,
@@ -198,7 +256,7 @@ class _3DState extends State<tree_D> {
                 });
               },
             ),),
-          Container(width: 350, height: 40, alignment: Alignment.centerLeft, child: Text('Pitch Degrees', style: TextStyle(color: Colors.white, fontSize: 18),),),
+          Container(width: 350, height: 40, alignment: Alignment.centerLeft, child: Text('Pitch Degrees', style: TextStyle(color: Colors.black, fontSize: 18),),),
           Padding(padding: EdgeInsets.all(10)),
           RollTextField(
             controller: _controllerPitch,
@@ -221,7 +279,7 @@ class _3DState extends State<tree_D> {
                 });
               },
             ),),
-          Container(width: 350, height: 40, alignment: Alignment.centerLeft, child: Text('Yaw Degrees', style: TextStyle(color: Colors.white, fontSize: 18),),),
+          Container(width: 350, height: 40, alignment: Alignment.centerLeft, child: Text('Yaw Degrees', style: TextStyle(color: Colors.black, fontSize: 18),),),
           Padding(padding: EdgeInsets.all(10)),
           RollTextField(
             controller: _controllerYaw,
@@ -245,9 +303,9 @@ class _3DState extends State<tree_D> {
               },
             ),),
           Padding(padding: EdgeInsets.all(10)),
-          Container(width: 345, height: 30, alignment: Alignment.centerLeft, child: Text('MAG Alignment', style: TextStyle(color: Colors.white, fontSize: 18),),),
+          Container(width: 345, height: 30, alignment: Alignment.centerLeft, child: Text('MAG Alignment', style: TextStyle(color: Colors.black, fontSize: 18),),),
           Container(width: 350, height: 40,
-              decoration: BoxDecoration(color: Colors.white,
+              decoration: BoxDecoration(color: Colors.black,
                   borderRadius: BorderRadius.horizontal(
                     left: Radius.circular(7),
                     right: Radius.circular(7),// Скругление слева
@@ -282,10 +340,10 @@ class _3DState extends State<tree_D> {
               ],)
           ),
           Padding(padding: EdgeInsets.all(20)),
-          Container(width: 350, height: 80, alignment: Alignment.centerLeft, child: Text('Dshot Beacon Configuration', style: TextStyle(color: Colors.white, fontSize: 24),),),
-          Container(width: 345, height: 30, alignment: Alignment.centerLeft, child: Text('Beacon Tone', style: TextStyle(color: Colors.white, fontSize: 18),),),
+          Container(width: 350, height: 80, alignment: Alignment.centerLeft, child: Text('Dshot Beacon Configuration', style: TextStyle(color: Colors.black, fontSize: 24),),),
+          Container(width: 345, height: 30, alignment: Alignment.centerLeft, child: Text('Beacon Tone', style: TextStyle(color: Colors.black, fontSize: 18),),),
           Container(width: 350, height: 40,
-              decoration: BoxDecoration(color: Colors.white,
+              decoration: BoxDecoration(color: Colors.black,
                   borderRadius: BorderRadius.horizontal(
                     left: Radius.circular(7),
                     right: Radius.circular(7),// Скругление слева
@@ -323,56 +381,56 @@ class _3DState extends State<tree_D> {
           Container(width: 350, height: 60,
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('RX_LOST', style: TextStyle(color: Colors.white, fontSize: 18),),
+                Text('RX_LOST', style: TextStyle(color: Colors.black, fontSize: 18),),
                 Switch(value: switchValue3, onChanged: (value){setState(() {
                   switchValue3 = value;
-                });}, activeColor: Colors.white,  inactiveThumbColor: Colors.grey.shade100, activeTrackColor: Color.fromARGB(255,16,162,245), inactiveTrackColor: Color.fromARGB(255,127,132,137),)
+                });}, activeColor: Colors.white70,  inactiveThumbColor: Colors.grey, activeTrackColor: Color.fromARGB(255,252,128,33), inactiveTrackColor: Colors.white70,)
               ],),
           ),
           Container(width: 350, height: 60,
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('RX_SET', style: TextStyle(color: Colors.white, fontSize: 18),),
+                Text('RX_SET', style: TextStyle(color: Colors.black, fontSize: 18),),
                 Switch(value: switchValue4, onChanged: (value){setState(() {
                   switchValue4 = value;
-                });}, activeColor: Colors.white,  inactiveThumbColor: Colors.grey.shade100, activeTrackColor: Color.fromARGB(255,16,162,245), inactiveTrackColor: Color.fromARGB(255,127,132,137),)
+                });}, activeColor: Colors.white70,  inactiveThumbColor: Colors.grey, activeTrackColor: Color.fromARGB(255,252,128,33), inactiveTrackColor: Colors.white70,)
               ],),
           ),
           Padding(padding: EdgeInsets.all(20)),
-          Container(width: 350, height: 80, alignment: Alignment.centerLeft, child: Text('Beeper Beacon Configuration', style: TextStyle(color: Colors.white, fontSize: 24),),),
+          Container(width: 350, height: 80, alignment: Alignment.centerLeft, child: Text('Beeper Beacon Configuration', style: TextStyle(color: Colors.black, fontSize: 24),),),
           Container(width: 350, height: 60,
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('RX_LOST_LANDING', style: TextStyle(color: Colors.white, fontSize: 18),),
+                Text('RX_LOST_LANDING', style: TextStyle(color: Colors.black, fontSize: 18),),
                 Switch(value: switchValue5, onChanged: (value){setState(() {
                   switchValue5 = value;
-                });}, activeColor: Colors.white,  inactiveThumbColor: Colors.grey.shade100, activeTrackColor: Color.fromARGB(255,16,162,245), inactiveTrackColor: Color.fromARGB(255,127,132,137),)
+                });}, activeColor: Colors.white70,  inactiveThumbColor: Colors.grey, activeTrackColor: Color.fromARGB(255,252,128,33), inactiveTrackColor: Colors.white70,)
               ],),
           ),
           Container(width: 350, height: 60,
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('RX_LOST', style: TextStyle(color: Colors.white, fontSize: 18),),
+                Text('RX_LOST', style: TextStyle(color: Colors.black, fontSize: 18),),
                 Switch(value: switchValue6, onChanged: (value){setState(() {
                   switchValue6 = value;
-                });}, activeColor: Colors.white,  inactiveThumbColor: Colors.grey.shade100, activeTrackColor: Color.fromARGB(255,16,162,245), inactiveTrackColor: Color.fromARGB(255,127,132,137),)
+                });}, activeColor: Colors.white70,  inactiveThumbColor: Colors.grey, activeTrackColor: Color.fromARGB(255,252,128,33), inactiveTrackColor: Colors.white70,)
               ],),
           ),
           Container(width: 350, height: 60,
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('GYRO_CALIBRATED', style: TextStyle(color: Colors.white, fontSize:18),),
+                Text('GYRO_CALIBRATED', style: TextStyle(color: Colors.black, fontSize:18),),
                 Switch(value: switchValue7, onChanged: (value){setState(() {
                   switchValue7 = value;
-                });}, activeColor: Colors.white,  inactiveThumbColor: Colors.grey.shade100, activeTrackColor: Color.fromARGB(255,16,162,245), inactiveTrackColor: Color.fromARGB(255,127,132,137),)
+                });}, activeColor: Colors.white70,  inactiveThumbColor: Colors.grey, activeTrackColor: Color.fromARGB(255,252,128,33), inactiveTrackColor: Colors.white70,)
               ],),
           ),
           Padding(padding: EdgeInsets.all(20)),
-          Container(width: 350, height: 80, alignment: Alignment.centerLeft, child: Text('Personalization', style: TextStyle(color: Colors.white, fontSize: 24),),),
-          Container(width: 345, height: 30, alignment: Alignment.centerLeft, child: Text('Craft name', style: TextStyle(color: Colors.white, fontSize: 18),),),
+          Container(width: 350, height: 80, alignment: Alignment.centerLeft, child: Text('Personalization', style: TextStyle(color: Colors.black, fontSize: 24),),),
+          Container(width: 345, height: 30, alignment: Alignment.centerLeft, child: Text('Craft name', style: TextStyle(color: Colors.black, fontSize: 18),),),
           Container(alignment: Alignment.centerLeft, width: 350, height: 40,
             child: Padding(padding: EdgeInsets.only(left: 10),child: Text('', style: TextStyle(color: Colors.grey),),),
-            decoration: BoxDecoration(color: Colors.white,
+            decoration: BoxDecoration(color: Colors.black,
                 borderRadius: BorderRadius.horizontal(
                   left: Radius.circular(7),
                   right: Radius.circular(7),// Скругление слева
@@ -381,10 +439,10 @@ class _3DState extends State<tree_D> {
                 border: Border.all(color: Color.fromARGB(255, 109, 113, 120), width: 1)),
           ),
           Padding(padding: EdgeInsets.all(10)),
-          Container(width: 345, height: 30, alignment: Alignment.centerLeft, child: Text('Pilot name', style: TextStyle(color: Colors.white, fontSize: 18),),),
+          Container(width: 345, height: 30, alignment: Alignment.centerLeft, child: Text('Pilot name', style: TextStyle(color: Colors.black, fontSize: 18),),),
           Container(alignment: Alignment.centerLeft, width: 350, height: 40,
             child: Padding(padding: EdgeInsets.only(left: 10),child: Text('', style: TextStyle(color: Colors.grey),),),
-            decoration: BoxDecoration(color: Colors.white,
+            decoration: BoxDecoration(color: Colors.black,
                 borderRadius: BorderRadius.horizontal(
                   left: Radius.circular(7),
                   right: Radius.circular(7),// Скругление слева
@@ -410,10 +468,7 @@ class DeformableButton extends StatefulWidget {
     Key? key,
     required this.child,
     this.gradient = const LinearGradient(
-      colors: <Color>[
-        Color(0xFF3366FF),
-        Color(0xFF00CCFF),
-      ],
+      colors: <Color>[Color.fromARGB(255, 233, 237, 245), Color.fromARGB(255, 149, 152, 158,)]
     ),
     this.width = 50.0,
     this.height = 50.0,
@@ -535,7 +590,7 @@ class _MyCustomSliderState extends State<MyCustomSlider> {
   Widget build(BuildContext context) {
     // Определение градиента для активной части слайдера
     final LinearGradient activeGradient = LinearGradient(
-      colors: [Color.fromARGB(255, 2, 96, 164), Color.fromARGB(255, 25, 160, 236)],
+      colors: [Color.fromARGB(255, 255, 115, 8), Color.fromARGB(255, 252, 128, 33)],
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
     );
@@ -556,7 +611,7 @@ class _MyCustomSliderState extends State<MyCustomSlider> {
           activeTrackColor: Colors.transparent,
           inactiveTrackColor: Colors.transparent,
           trackHeight: 8.0,
-          overlayColor: Colors.blue.withAlpha(32), // цвет вокруг бегунка при нажатии
+          overlayColor: Colors.orange.withAlpha(32), // цвет вокруг бегунка при нажатии
           overlayShape: RoundSliderOverlayShape(overlayRadius: 28.0), // форма и размер этого вокруг бегунка
           trackShape: _CustomTrackShape(activeGradient, inactiveGradient), // кастомизация формы и градиента полосы
         ),
@@ -613,7 +668,7 @@ class _CustomThumbShape extends SliderComponentShape {
     // Градиент для бегунка
     final Paint thumbPaint = Paint()
       ..shader = LinearGradient(
-          colors: [Color.fromARGB(255, 24, 24, 25), Color.fromARGB(255, 44, 48, 52)],
+          colors: [Color.fromARGB(255, 233, 237, 245), Color.fromARGB(255, 149, 152, 158,)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight
       ).createShader(Rect.fromCircle(center: center, radius: thumbRadius));
@@ -628,7 +683,7 @@ class _CustomThumbShape extends SliderComponentShape {
     // Рисуем синий кружок в середине
     final double blueCircleRadius = thumbRadius / 5; // Допустим, размер синего кружка в 2 раза меньше
     final Paint blueCirclePaint = Paint()
-      ..color = Colors.blue; // Цвет синего кружка
+      ..color = Colors.orange; // Цвет синего кружка
 
     final Path blueCirclePath = Path()
       ..addOval(Rect.fromCircle(center: center, radius: blueCircleRadius));
@@ -739,7 +794,7 @@ class RollTextField extends StatelessWidget {
         ),
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.black,
         borderRadius: BorderRadius.horizontal(
           left: Radius.circular(7),
           right: Radius.circular(7), // Скругление слева
