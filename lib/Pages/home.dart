@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -30,13 +31,6 @@ class _SetupState extends State<Setup> {
       });
     }
 
-  }
-  void _handleLongPress() {
-      draggableScrollableController.animateTo(
-        0.1, // Минимальный размер. Укажите нужное значение.
-        duration: Duration(milliseconds: 500),
-        curve: Curves.easeInOut,
-      );
   }
   var polylines;
   Timer? _timer;
@@ -78,43 +72,56 @@ class _SetupState extends State<Setup> {
       print("USB устройства не найдены");
     }
   }
+  var droneSpeedkm = 100; // задаем текущую скорость дрона
+
   // Метод для запуска анимации
   void _animateObject() {
+    var droneSpeed = droneSpeedkm * 1/38880000;
+
     if (points.isEmpty || points.length < 2) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Добавьте хотя бы две точки для полётного задания")),
       );
       return;
     }
-    for(int i = 0; i < points.length; i++){
-      sendMSPMessage(buildMSP(points[i], 201));
-    }
-    animatedMarkerPoint = points.first;
-    final int totalPoints = points.length;
-    _currentPointIndex = 0; // Сбросить индекс
-    progress = 0.0; // Сбросить прогресс
 
-    _timer?.cancel(); // Отменяем предыдущий таймер, если он был
-    _timer = Timer.periodic(Duration(milliseconds: 100), (Timer _timer) {
+    final totalPoints = points.length;
+
+    _currentPointIndex = 0;
+    progress = 0.0;
+
+    _timer?.cancel();
+    _timer = Timer.periodic(Duration(milliseconds: 10), (timer) {
       setState(() {
-        progress += 0.05;
+        final start = points[_currentPointIndex];
+        final end = points[(_currentPointIndex + 1) % totalPoints];
+        final distance = sqrt(pow(end.latitude - start.latitude, 2) + pow(end.longitude - start.longitude, 2));
+
+        final step = droneSpeed / distance;
+        progress += step;
+
         if (progress >= 1) {
           progress = 0.0;
           _currentPointIndex++;
-          if (_currentPointIndex >= totalPoints - 1) {
-            _currentPointIndex = 0; // Возвращаемся к началу, если это конец маршрута
-            _timer.cancel(); // Останавливаем таймер
-          }
+
+
+          animatedMarkerPoint = LatLng(
+              end.latitude, end.longitude
+          );
+        } else {
+          animatedMarkerPoint = LatLng(
+            start.latitude + (end.latitude - start.latitude) * progress,
+            start.longitude + (end.longitude - start.longitude) * progress,
+          );
         }
-        final start = points[_currentPointIndex];
-        final end = points[(_currentPointIndex + 1) % totalPoints];
-        animatedMarkerPoint = LatLng(
-          start.latitude + (end.latitude - start.latitude) * progress,
-          start.longitude + (end.longitude - start.longitude) * progress,
-        );
       });
     });
   }
+
+
+
+
+
 
   @override
   void dispose() {
@@ -128,6 +135,7 @@ class _SetupState extends State<Setup> {
   void _resetMarkers() {
     setState(() {
       points.clear();
+      animatedMarkerPoint = null;
     });
   }
   List<LatLng> generateSpiralPoints(List<LatLng> polygonPoints) {
@@ -405,6 +413,27 @@ int index = -1;
                 },
               ),
               ListTile(
+                leading: Icon(Icons.battery_charging_full),
+                title: Text('Батарея'),
+                onTap: () {
+                  Navigator.pushReplacementNamed(context, '/poba');
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.cable),
+                title: Text('Порты'),
+                onTap: () {
+                  Navigator.pushReplacementNamed(context, '/port');
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.sports_motorsports),
+                title: Text('Серво'),
+                onTap: () {
+                  Navigator.pushReplacementNamed(context, '/ser');
+                },
+              ),
+              ListTile(
                 leading: Icon(Icons.report_problem),
                 title: Text('Сообщить об ошибке'),
                 onTap: () {
@@ -500,7 +529,7 @@ int index = -1;
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter,
                                 colors: [
-                                  Colors.white70, Colors.orange
+                                  Colors.transparent, Colors.transparent
                                 ],
                               ),
                             ),
@@ -676,7 +705,7 @@ int index = -1;
           width: 80.0,
           height: 80.0,
           point: animatedMarkerPoint!,
-          builder: (ctx) => Icon(Icons.airplanemode_active, size: 32.0, color: Colors.deepOrange),
+          builder: (ctx) => SvgPicture.asset('Assets/Images/D1Dron4i.svg'),
         ),
       );
     }
@@ -697,12 +726,15 @@ int index = -1;
               });
             },
             onPointerUp: (details) {
-              isPressedDown = false; // Сброс флага при отпускании
-              draggableScrollableController.animateTo(
-                initialChildSize, // Возвращаем DraggableSheet к исходному размеру
-                duration: Duration(milliseconds: 500),
-                curve: Curves.easeInOut,
-              );
+              if(!_isMoveMarkerMode) {
+                isPressedDown = false; // Сброс флага при отпускании
+                draggableScrollableController.animateTo(
+                  initialChildSize,
+                  // Возвращаем DraggableSheet к исходному размеру
+                  duration: Duration(milliseconds: 500),
+                  curve: Curves.easeInOut,
+                );
+              }
             },
             child: FlutterMap(
               mapController: mapController,
@@ -729,7 +761,7 @@ int index = -1;
             top: 0,
             left: 0,
             child: Container(
-              width: 640,
+              width: MediaQuery.of(context).size.width,
               height: 100,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -749,10 +781,9 @@ int index = -1;
                   stops: [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.7, 0.8, 1],
                 ),
               ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: SizedBox(
-                  width: 56, // Ширина и высота FloatingActionButton
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [SizedBox(
                   height: 56,
                   child: FloatingActionButton(
                     onPressed: () {_openSidebarMenu(context);},
@@ -762,6 +793,7 @@ int index = -1;
                     splashColor: Colors.transparent, // Прозрачный цвет всплеска
                   ),
                 ),
+                  HintDialog(),]
               ),
             ),
           ),
@@ -777,7 +809,7 @@ int index = -1;
                   topRight: Radius.circular(20), // Скругление верхнего правого угла
                 ),
                     gradient: LinearGradient(
-                        colors: [Colors.white, Color.fromARGB(255, 22, 23, 27,)],
+                        colors: [Colors.white, Color.fromARGB(255, 190, 191, 194,)],
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter)
                 ),
@@ -882,8 +914,8 @@ int index = -1;
                                                               child: Text('Долгота', style: TextStyle(color: Colors.black, fontSize: 16)),
                                                             ),
                                                           ),
-                                                          Flexible( // Изменили Expanded на Flexible для текстового поля
-                                                            flex: 2, // Задали flex в два раза больше, чем у текста, для управления размером
+                                                          Flexible(
+                                                            flex: 2,
                                                             child: Padding(
                                                               padding: EdgeInsets.all(5.0),
                                                               child: TextField(
@@ -973,7 +1005,7 @@ int index = -1;
                             children: <Widget>[
                               GradientBorderButtonHelp(
                                 iconLeft: SvgPicture.asset('Assets/Images/D1Dron4i.svg'),
-                                iconRight: SvgPicture.asset('Assets/Images/P3rka.svg'),
+                                iconRight: SvgPicture.asset('Assets/Images/trash.svg'),
                                 text: 'Сбросить маркеры',
                                 buttonColors: [Colors.black, Colors.black87, Colors.black54],
                                 borderColors: [Colors.white70, Color.fromARGB(255,252,128,33),],
@@ -984,7 +1016,7 @@ int index = -1;
                               ),
                               GradientBorderButtonHelp(
                                 iconLeft: SvgPicture.asset('Assets/Images/D1Dron4i.svg'),
-                                iconRight: SvgPicture.asset('Assets/Images/P3rka.svg'),
+                                iconRight: SvgPicture.asset('Assets/Images/polet.svg'),
                                 text: 'Полёт по периметру',
                                 buttonColors: [Colors.black, Colors.black87, Colors.black54],
                                 borderColors: [Colors.white70, Color.fromARGB(255,252,128,33),],
@@ -997,7 +1029,7 @@ int index = -1;
                               // Добавьте больше кнопок здесь
                               GradientBorderButtonHelp(
                                 iconLeft: SvgPicture.asset('Assets/Images/D1Dron4i.svg'),
-                                iconRight: SvgPicture.asset('Assets/Images/Sp1ralka.svg'),
+                                iconRight: SvgPicture.asset('Assets/Images/spirali.svg'),
                                 text: 'Спиральная траектория',
                                 buttonColors: [Colors.black, Colors.black87, Colors.black54],
                                 borderColors: [Colors.white70, Color.fromARGB(255,252,128,33)],
@@ -1127,6 +1159,56 @@ class _GradientBorderButtonState extends State<GradientBorderButton> {
     );
   }
 }
+class HintDialog extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 100,
+      height: 50, // Увеличила высоту для соответствия размеру картинки
+      child: ElevatedButton(
+        onPressed: () {
+          showHintDialog(context);
+        },
+        child: Icon(Icons.question_mark),
+      ),
+    );
+  }
+
+  void showHintDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.9,
+            height: MediaQuery.of(context).size.height * 0.30,
+            child: Column(
+              mainAxisSize: MainAxisSize.min, // Высота окна подгоняется под содержимое
+              crossAxisAlignment: CrossAxisAlignment.start, // Выравнивание по левому краю
+              children: [
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end, // Сдвигаем содержимое вниз
+                    children: [
+                      Container(width: 150, child:
+                      SvgPicture.asset('Assets/Images/Dron4iDevushka.svg'),),
+                    Expanded(child: Text(
+                      "При нажатии на карту появится маркер, при его удержании откроется меню маркера",style: TextStyle(fontSize: 12),
+                    ),)
+
+
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
 class GradientBorderButtonHelp extends StatefulWidget {
   final String text;
   final List<Color> buttonColors;
@@ -1210,8 +1292,8 @@ class _GradientBorderButtonHelpState extends State<GradientBorderButtonHelp> {
                         ), // Левая иконка
                       if(widget.iconRight != null)
                         Container(
-                          width: 50.0, // Задаем фиксированную ширину для контейнера
-                          height: 50.0, // Задаем фиксированную высоту для контейнера
+                          width: 60.0, // Задаем фиксированную ширину для контейнера
+                          height: 60.0, // Задаем фиксированную высоту для контейнера
                           child: widget.iconRight!,
                         ), // Правая иконка
                     ],

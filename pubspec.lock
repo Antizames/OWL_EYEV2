@@ -198,6 +198,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.0.0"
+  flutter_popup:
+    dependency: "direct main"
+    description:
+      name: flutter_popup
+      sha256: "8d653ebb04f0e334797aeb5b49eaf7653c57012e1a7cdeac09297dacf79a6524"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.3.0"
   flutter_svg:
     dependency: "direct main"
     description:
@@ -317,6 +325,14 @@ packages:
     description:
       name: nested
       sha256: "03bac4c528c64c95c722ec99280375a6f2fc708eec17c7b3f07253b626cd2a20"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
+  object_3d:
+    dependency: "direct main"
+    description:
+      name: object_3d
+      sha256: "0634f7a5deb7920c7e594008f2a163022546c38d305f5f7b6d3c9eba14e44c11"
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"

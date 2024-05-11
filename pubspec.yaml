@@ -42,9 +42,11 @@ dependencies:
   flutter_glow: ^0.3.0
   flutter_svg:
   flutter_map_dragmarker:
+  flutter_popup:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+  object_3d:
 
 dev_dependencies:
   flutter_test:
@@ -69,10 +71,14 @@ flutter:
   uses-material-design: true
 
   assets:
-    - Assets/Images/P3rka.svg
-    - Assets/Images/Sp1ralka.svg
+    - Assets/Images/polet.svg
+    - Assets/Images/spirali.svg
     - Assets/Images/halfD.svg
     - Assets/Images/D1Dron4i.svg
+    - Assets/Images/trash.svg
+    - Assets/Images/Dron4iDevushka.svg
+    - Assets/3D/lego.obj
+    - Assets/Images/Draf.svg
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

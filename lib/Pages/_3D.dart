@@ -88,6 +88,27 @@ class _3DState extends State<tree_D> {
                 },
               ),
               ListTile(
+                leading: Icon(Icons.battery_charging_full),
+                title: Text('Батарея'),
+                onTap: () {
+                  Navigator.pushReplacementNamed(context, '/poba');
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.cable),
+                title: Text('Порты'),
+                onTap: () {
+                  Navigator.pushReplacementNamed(context, '/port');
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.sports_motorsports),
+                title: Text('Серво'),
+                onTap: () {
+                  Navigator.pushReplacementNamed(context, '/ser');
+                },
+              ),
+              ListTile(
                 leading: Icon(Icons.report_problem),
                 title: Text('Сообщить об ошибке'),
                 onTap: () {
@@ -154,9 +175,9 @@ class _3DState extends State<tree_D> {
             ),
           ]),
           Padding(padding: EdgeInsets.all(10)),
-          Container(width: 345, height: 80, alignment: Alignment.centerLeft, child: Text('System Configuration', style: TextStyle(color: Colors.black, fontSize: 24),),),
-          Container(width: 345, height: 30, alignment: Alignment.centerLeft, child: Text('Gyro update', style: TextStyle(color: Colors.black, fontSize: 18),),),
-          Container(alignment: Alignment.centerLeft, width: 350, height: 40,
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 80, alignment: Alignment.centerLeft, child: Text('System Configuration', style: TextStyle(color: Colors.black, fontSize: 24),),),
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 30, alignment: Alignment.centerLeft, child: Row(children: [Text('Gyro update', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), InfoButton(infoMessage: 'blank message')],),),
+          Container(alignment: Alignment.centerLeft, width: MediaQuery.of(context).size.width * 0.8, height: 40,
             child: Padding(padding: EdgeInsets.only(left: 10),child: Text('12.00 kHz', style: TextStyle(color: Colors.grey),),),
             decoration: BoxDecoration(color: Colors.black,
                 borderRadius: BorderRadius.horizontal(
@@ -167,8 +188,8 @@ class _3DState extends State<tree_D> {
                 border: Border.all(color: Color.fromARGB(255, 109, 113, 120), width: 1)),
           ),
           Padding(padding: EdgeInsets.all(10)),
-          Container(width: 345, height: 30, alignment: Alignment.centerLeft, child: Text('PID', style: TextStyle(color: Colors.black, fontSize: 18),),),
-          Container(width: 350, height: 40,
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 30, alignment: Alignment.centerLeft, child: Row(children: [Text('PID', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), InfoButton(infoMessage: 'blank message')],)),
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 40,
               decoration: BoxDecoration(color: Colors.black,
                   borderRadius: BorderRadius.horizontal(
                     left: Radius.circular(7),
@@ -204,36 +225,36 @@ class _3DState extends State<tree_D> {
               ],)
           ),
           Padding(padding: EdgeInsets.all(10)),
-          Container(width: 350, height: 60,
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 60,
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Accelerometer', style: TextStyle(color: Colors.black, fontSize: 18),),
+                Row(children: [Text('Accelerometer', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), InfoButton(infoMessage: 'blank message')],),
                 Switch(value: switchValue, onChanged: (value){setState(() {
                   switchValue = value;
                 });}, activeColor: Colors.white70,  inactiveThumbColor: Colors.grey, activeTrackColor: Color.fromARGB(255,252,128,33), inactiveTrackColor: Colors.white70,)
               ],),
           ),
-          Container(width: 350, height: 60,
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 60,
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Barometer', style: TextStyle(color: Colors.black, fontSize: 18),),
+                Row(children: [Text('Barometer', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), InfoButton(infoMessage: 'blank message')],),
                 Switch(value: switchValue1, onChanged: (value){setState(() {
                   switchValue1 = value;
                 });}, activeColor: Colors.white70,  inactiveThumbColor: Colors.grey, activeTrackColor: Color.fromARGB(255,252,128,33), inactiveTrackColor: Colors.white70,)
               ],),
           ),
-          Container(width: 350, height: 60,
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 60,
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Magnetometer', style: TextStyle(color: Colors.black, fontSize:18),),
+                Row(children: [Text('Magnetometer', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), InfoButton(infoMessage: 'blank message')],),
                 Switch(value: switchValue2, onChanged: (value){setState(() {
                   switchValue2 = value;
                 });}, activeColor: Colors.white70,  inactiveThumbColor: Colors.grey, activeTrackColor: Color.fromARGB(255,252,128,33), inactiveTrackColor: Colors.white70,)
               ],),
           ),
           Padding(padding: EdgeInsets.all(10)),
-          Container(width: 350, height: 80, alignment: Alignment.centerLeft, child: Text('Board and Sensor Aligment', style: TextStyle(color: Colors.black, fontSize: 24),),),
-          Container(width: 350, height: 40, alignment: Alignment.centerLeft, child: Text('Roll Degrees', style: TextStyle(color: Colors.black, fontSize: 18),),),
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 80, alignment: Alignment.centerLeft, child: Text('Board and Sensor Aligment', style: TextStyle(color: Colors.black, fontSize: 24),),),
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 40, alignment: Alignment.centerLeft, child: Row(children: [Text('Roll Degrees', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), InfoButton(infoMessage: 'blank message')],),),
           Padding(padding: EdgeInsets.all(10)),
           RollTextField(
             controller: _controllerRoll,
@@ -245,7 +266,7 @@ class _3DState extends State<tree_D> {
               }
             },
           ),
-          Container(width: 350, height: 60,
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 60,
             child:
             MyCustomSlider(
               sliderValue: roll,
@@ -256,7 +277,7 @@ class _3DState extends State<tree_D> {
                 });
               },
             ),),
-          Container(width: 350, height: 40, alignment: Alignment.centerLeft, child: Text('Pitch Degrees', style: TextStyle(color: Colors.black, fontSize: 18),),),
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 40, alignment: Alignment.centerLeft, child: Row(children: [Text('Pitch Degrees', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), InfoButton(infoMessage: 'blank message')],),),
           Padding(padding: EdgeInsets.all(10)),
           RollTextField(
             controller: _controllerPitch,
@@ -268,7 +289,7 @@ class _3DState extends State<tree_D> {
               }
             },
           ),
-          Container(width: 350, height: 60,
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 60,
             child:
             MyCustomSlider(
               sliderValue: pitch,
@@ -279,7 +300,7 @@ class _3DState extends State<tree_D> {
                 });
               },
             ),),
-          Container(width: 350, height: 40, alignment: Alignment.centerLeft, child: Text('Yaw Degrees', style: TextStyle(color: Colors.black, fontSize: 18),),),
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 40, alignment: Alignment.centerLeft, child: Row(children: [Text('Yaw Degrees', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), InfoButton(infoMessage: 'blank message')],),),
           Padding(padding: EdgeInsets.all(10)),
           RollTextField(
             controller: _controllerYaw,
@@ -291,7 +312,7 @@ class _3DState extends State<tree_D> {
               }
             },
           ),
-          Container(width: 350, height: 60,
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 60,
             child:
             MyCustomSlider(
               sliderValue: yaw,
@@ -303,8 +324,8 @@ class _3DState extends State<tree_D> {
               },
             ),),
           Padding(padding: EdgeInsets.all(10)),
-          Container(width: 345, height: 30, alignment: Alignment.centerLeft, child: Text('MAG Alignment', style: TextStyle(color: Colors.black, fontSize: 18),),),
-          Container(width: 350, height: 40,
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 30, alignment: Alignment.centerLeft, child: Row(children: [Text('MAG Alignment', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), InfoButton(infoMessage: 'blank message')],),),
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 40,
               decoration: BoxDecoration(color: Colors.black,
                   borderRadius: BorderRadius.horizontal(
                     left: Radius.circular(7),
@@ -340,9 +361,9 @@ class _3DState extends State<tree_D> {
               ],)
           ),
           Padding(padding: EdgeInsets.all(20)),
-          Container(width: 350, height: 80, alignment: Alignment.centerLeft, child: Text('Dshot Beacon Configuration', style: TextStyle(color: Colors.black, fontSize: 24),),),
-          Container(width: 345, height: 30, alignment: Alignment.centerLeft, child: Text('Beacon Tone', style: TextStyle(color: Colors.black, fontSize: 18),),),
-          Container(width: 350, height: 40,
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 80, alignment: Alignment.centerLeft, child: Text('Dshot Beacon Configuration', style: TextStyle(color: Colors.black, fontSize: 24),),),
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 30, alignment: Alignment.centerLeft, child: Row(children: [Text('Beacon Tone', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), InfoButton(infoMessage: 'blank message')],),),
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 40,
               decoration: BoxDecoration(color: Colors.black,
                   borderRadius: BorderRadius.horizontal(
                     left: Radius.circular(7),
@@ -378,57 +399,57 @@ class _3DState extends State<tree_D> {
               ],)
           ),
           Padding(padding: EdgeInsets.all(10)),
-          Container(width: 350, height: 60,
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 60,
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('RX_LOST', style: TextStyle(color: Colors.black, fontSize: 18),),
+                Row(children: [Text('RX_LOST', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), InfoButton(infoMessage: 'blank message')],),
                 Switch(value: switchValue3, onChanged: (value){setState(() {
                   switchValue3 = value;
                 });}, activeColor: Colors.white70,  inactiveThumbColor: Colors.grey, activeTrackColor: Color.fromARGB(255,252,128,33), inactiveTrackColor: Colors.white70,)
               ],),
           ),
-          Container(width: 350, height: 60,
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 60,
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('RX_SET', style: TextStyle(color: Colors.black, fontSize: 18),),
+                Row(children: [Text('RX_SET', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), InfoButton(infoMessage: 'blank message')],),
                 Switch(value: switchValue4, onChanged: (value){setState(() {
                   switchValue4 = value;
                 });}, activeColor: Colors.white70,  inactiveThumbColor: Colors.grey, activeTrackColor: Color.fromARGB(255,252,128,33), inactiveTrackColor: Colors.white70,)
               ],),
           ),
           Padding(padding: EdgeInsets.all(20)),
-          Container(width: 350, height: 80, alignment: Alignment.centerLeft, child: Text('Beeper Beacon Configuration', style: TextStyle(color: Colors.black, fontSize: 24),),),
-          Container(width: 350, height: 60,
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 80, alignment: Alignment.centerLeft, child: Text('Beeper Beacon Configuration', style: TextStyle(color: Colors.black, fontSize: 24),),),
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 60,
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('RX_LOST_LANDING', style: TextStyle(color: Colors.black, fontSize: 18),),
+                Row(children: [Text('RX_LOST_LANDING', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), InfoButton(infoMessage: 'blank message')],),
                 Switch(value: switchValue5, onChanged: (value){setState(() {
                   switchValue5 = value;
                 });}, activeColor: Colors.white70,  inactiveThumbColor: Colors.grey, activeTrackColor: Color.fromARGB(255,252,128,33), inactiveTrackColor: Colors.white70,)
               ],),
           ),
-          Container(width: 350, height: 60,
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 60,
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('RX_LOST', style: TextStyle(color: Colors.black, fontSize: 18),),
+                Row(children: [Text('RX_LOST', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), InfoButton(infoMessage: 'blank message')],),
                 Switch(value: switchValue6, onChanged: (value){setState(() {
                   switchValue6 = value;
                 });}, activeColor: Colors.white70,  inactiveThumbColor: Colors.grey, activeTrackColor: Color.fromARGB(255,252,128,33), inactiveTrackColor: Colors.white70,)
               ],),
           ),
-          Container(width: 350, height: 60,
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 60,
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('GYRO_CALIBRATED', style: TextStyle(color: Colors.black, fontSize:18),),
+                Row(children: [Text('GYRO_CALIBRATED', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), InfoButton(infoMessage: 'blank message')],),
                 Switch(value: switchValue7, onChanged: (value){setState(() {
                   switchValue7 = value;
                 });}, activeColor: Colors.white70,  inactiveThumbColor: Colors.grey, activeTrackColor: Color.fromARGB(255,252,128,33), inactiveTrackColor: Colors.white70,)
               ],),
           ),
           Padding(padding: EdgeInsets.all(20)),
-          Container(width: 350, height: 80, alignment: Alignment.centerLeft, child: Text('Personalization', style: TextStyle(color: Colors.black, fontSize: 24),),),
-          Container(width: 345, height: 30, alignment: Alignment.centerLeft, child: Text('Craft name', style: TextStyle(color: Colors.black, fontSize: 18),),),
-          Container(alignment: Alignment.centerLeft, width: 350, height: 40,
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 80, alignment: Alignment.centerLeft, child: Text('Personalization', style: TextStyle(color: Colors.black, fontSize: 24),),),
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 30, alignment: Alignment.centerLeft, child: Row(children: [Text('Craft name', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), InfoButton(infoMessage: 'blank message')],),),
+          Container(alignment: Alignment.centerLeft, width: MediaQuery.of(context).size.width * 0.8, height: 40,
             child: Padding(padding: EdgeInsets.only(left: 10),child: Text('', style: TextStyle(color: Colors.grey),),),
             decoration: BoxDecoration(color: Colors.black,
                 borderRadius: BorderRadius.horizontal(
@@ -439,8 +460,8 @@ class _3DState extends State<tree_D> {
                 border: Border.all(color: Color.fromARGB(255, 109, 113, 120), width: 1)),
           ),
           Padding(padding: EdgeInsets.all(10)),
-          Container(width: 345, height: 30, alignment: Alignment.centerLeft, child: Text('Pilot name', style: TextStyle(color: Colors.black, fontSize: 18),),),
-          Container(alignment: Alignment.centerLeft, width: 350, height: 40,
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 30, alignment: Alignment.centerLeft, child: Row(children: [Text('Pilot name', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), InfoButton(infoMessage: 'blank message')],),),
+          Container(alignment: Alignment.centerLeft, width: MediaQuery.of(context).size.width * 0.8, height: 40,
             child: Padding(padding: EdgeInsets.only(left: 10),child: Text('', style: TextStyle(color: Colors.grey),),),
             decoration: BoxDecoration(color: Colors.black,
                 borderRadius: BorderRadius.horizontal(
@@ -456,7 +477,55 @@ class _3DState extends State<tree_D> {
     );
   }
 
+class InfoButton extends StatelessWidget {
+  final String infoMessage;
 
+  InfoButton({required this.infoMessage});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Text(infoMessage),
+            actions: <Widget>[
+              TextButton(
+                child: Text('Закрыть'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          );
+        },
+      ),
+      child: Container(decoration: BoxDecoration(
+        color: Colors.black54, // Цвет фона кнопки
+        borderRadius: BorderRadius.circular(20), // Скругление кнопки
+      ),
+          width: 21, // Ширина кнопки
+          height: 21, // Высота кнопки
+          alignment: Alignment.center,
+          child:
+      Container(
+        decoration: BoxDecoration(
+          color: Colors.white, // Цвет фона кнопки
+          borderRadius: BorderRadius.circular(20), // Скругление кнопки
+        ),
+        width: 18, // Ширина кнопки
+        height: 18, // Высота кнопки
+        alignment: Alignment.center, // Позиционирование иконки в центре
+        child: Text(
+          'i',
+          style: TextStyle(
+            color: Colors.orange, // Цвет текста
+            fontSize: 14, // Размер текста
+          ),
+        ),
+      ),),
+    );
+  }
+}
 class DeformableButton extends StatefulWidget {
   final Widget child;
   final Gradient gradient;
@@ -761,7 +830,7 @@ class RollTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.centerLeft,
-      width: 350,
+      width: MediaQuery.of(context).size.width * 0.8,
       height: 40,
       child: Padding(
         padding: EdgeInsets.only(left: 10),
