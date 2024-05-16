@@ -72,7 +72,7 @@ class _SetupState extends State<Setup> {
       print("USB устройства не найдены");
     }
   }
-  var droneSpeedkm = 100; // задаем текущую скорость дрона
+  var droneSpeedkm = 100000; // задаем текущую скорость дрона
 
   // Метод для запуска анимации
   void _animateObject() {
@@ -431,6 +431,13 @@ int index = -1;
                 title: Text('Серво'),
                 onTap: () {
                   Navigator.pushReplacementNamed(context, '/ser');
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.sports_motorsports),
+                title: Text('Моторы'),
+                onTap: () {
+                  Navigator.pushReplacementNamed(context, '/tele');
                 },
               ),
               ListTile(
@@ -847,7 +854,7 @@ int index = -1;
                                             begin: Alignment.topCenter,
                                             end: Alignment.bottomCenter,
                                             colors: [
-                                              Colors.white70, Colors.orange
+                                              Colors.transparent, Colors.transparent
                                             ],
                                           ),
                                         ),

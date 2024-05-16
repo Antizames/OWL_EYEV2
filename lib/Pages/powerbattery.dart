@@ -92,6 +92,13 @@ class _PowerBatteryState extends State<PowerBattery> {
                 },
               ),
               ListTile(
+                leading: Icon(Icons.sports_motorsports),
+                title: Text('Моторы'),
+                onTap: () {
+                  Navigator.pushReplacementNamed(context, '/tele');
+                },
+              ),
+              ListTile(
                 leading: Icon(Icons.report_problem),
                 title: Text('Сообщить об ошибке'),
                 onTap: () {

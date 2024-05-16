@@ -7,9 +7,10 @@ import 'package:owl/Pages/home.dart';
 import 'package:owl/Pages/video.dart';
 import 'package:owl/Pages/_3D.dart';
 import 'package:owl/Pages/servo.dart';
+import 'package:owl/Pages/Telemetria.dart';
 void main() => runApp(MaterialApp(
   theme: ThemeData(primaryColor: Colors.black12, fontFamily: 'Lato'),
-  initialRoute: '/',
+  initialRoute: '/3d',
   routes: {
     '/': (context) => Setup(),
     '/fail': (context) => FailSafe(),
@@ -19,4 +20,5 @@ void main() => runApp(MaterialApp(
     '/vid': (context) => Video(),
     '/3d': (context) => tree_D(),
     '/ser': (context) => Servo(),
+    '/tele': (context) => Tele(),
   },));

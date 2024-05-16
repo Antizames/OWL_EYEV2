@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_glow/flutter_glow.dart';
+import 'package:flutter_msp/flutter_msp.dart';
+import 'package:flutter_libserialport/flutter_libserialport.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class tree_D extends StatefulWidget{
   const tree_D({super.key});
   @override
@@ -10,6 +12,8 @@ class _3DState extends State<tree_D> {
   double roll = 180;
   double pitch = 180;
   double yaw = 180;
+  String Pilot = 'Kolobok';
+  List<String> ListStr = [];
   String dropdownValue = "6.0 kHz";
   String dropdownValue1 = "";
   String dropdownValue2 = "";
@@ -24,6 +28,7 @@ class _3DState extends State<tree_D> {
   final TextEditingController _controllerRoll = TextEditingController();
   final TextEditingController _controllerPitch = TextEditingController();
   final TextEditingController _controllerYaw = TextEditingController();
+  final TextEditingController _controllerPilot = TextEditingController();
   void _openSidebarMenu(BuildContext context) {
     showGeneralDialog(
       context: context,
@@ -81,7 +86,7 @@ class _3DState extends State<tree_D> {
                 },
               ),
               ListTile(
-                leading: Icon(Icons.settings),
+                leading: Icon(FontAwesomeIcons.microchip),
                 title: Text('Конфигурация'),
                 onTap: () {
                   Navigator.pushReplacementNamed(context, '/3d');
@@ -89,7 +94,7 @@ class _3DState extends State<tree_D> {
               ),
               ListTile(
                 leading: Icon(Icons.battery_charging_full),
-                title: Text('Батарея'),
+                title: Text('Питание и Батарея'),
                 onTap: () {
                   Navigator.pushReplacementNamed(context, '/poba');
                 },
@@ -102,16 +107,17 @@ class _3DState extends State<tree_D> {
                 },
               ),
               ListTile(
-                leading: Icon(Icons.sports_motorsports),
-                title: Text('Серво'),
+                leading: Icon(FontAwesomeIcons.gears),
+                title: Text('Сервоприводы'),
                 onTap: () {
                   Navigator.pushReplacementNamed(context, '/ser');
                 },
               ),
               ListTile(
-                leading: Icon(Icons.report_problem),
-                title: Text('Сообщить об ошибке'),
+                leading: Icon(FontAwesomeIcons.fan),
+                title: Text('Моторы'),
                 onTap: () {
+                  Navigator.pushReplacementNamed(context, '/tele');
                 },
               ),
             ],
@@ -126,6 +132,7 @@ class _3DState extends State<tree_D> {
     _controllerRoll.text = roll.toStringAsFixed(0);
     _controllerPitch.text = pitch.toStringAsFixed(0);
     _controllerYaw.text = yaw.toStringAsFixed(0);
+    _controllerPilot.text = Pilot;
   }
 
   @override
@@ -133,7 +140,25 @@ class _3DState extends State<tree_D> {
     _controllerRoll.dispose();
     _controllerPitch.dispose();
     _controllerYaw.dispose();
+    _controllerPilot.dispose();
     super.dispose();
+  }
+  List<String> initPorts() {
+    setState(() {
+
+      ListStr = SerialPort.availablePorts;
+    });
+    return ListStr;
+  }
+  void send_msp(String message){
+    try {
+      MSPCommunication comm = MSPCommunication('COM5');
+      comm.sendMessageV1(11, message).then((_) {
+        print('Message sent successfully!');
+      });
+    } catch (e) {
+      print('Error: $e');
+    }
   }
 
   @override
@@ -162,10 +187,10 @@ class _3DState extends State<tree_D> {
             ),
             Column(children: [
               Text('Дрон', style: TextStyle(fontSize: 15, color: Colors.grey),),
-              GlowText('Конфигурация', style: TextStyle(fontSize: 15, color: Colors.black),glowColor: Colors.black,offset: Offset(0, -0.5),),
+              Text('Конфигурация', style: TextStyle(fontSize: 15, color: Colors.black)),
             ],),
             DeformableButton(
-              onPressed: (){print('Button pressed');},
+              onPressed: (){send_msp(Pilot);},
               child: Icon(Icons.save, color: Colors.grey.shade600,),
               gradient: LinearGradient(
                   colors: <Color>[Color.fromARGB(255, 233, 237, 245), Color.fromARGB(255, 149, 152, 158,)],
@@ -182,8 +207,7 @@ class _3DState extends State<tree_D> {
             decoration: BoxDecoration(color: Colors.black,
                 borderRadius: BorderRadius.horizontal(
                   left: Radius.circular(7),
-                  right: Radius.circular(7),// Скругление слева
-                  // Если вам нужно скругление справа, используйте right: Radius.circular(20)
+                  right: Radius.circular(7),
                 ),
                 border: Border.all(color: Color.fromARGB(255, 109, 113, 120), width: 1)),
           ),
@@ -450,7 +474,7 @@ class _3DState extends State<tree_D> {
           Container(width: MediaQuery.of(context).size.width * 0.8, height: 80, alignment: Alignment.centerLeft, child: Text('Personalization', style: TextStyle(color: Colors.black, fontSize: 24),),),
           Container(width: MediaQuery.of(context).size.width * 0.8, height: 30, alignment: Alignment.centerLeft, child: Row(children: [Text('Craft name', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), InfoButton(infoMessage: 'blank message')],),),
           Container(alignment: Alignment.centerLeft, width: MediaQuery.of(context).size.width * 0.8, height: 40,
-            child: Padding(padding: EdgeInsets.only(left: 10),child: Text('', style: TextStyle(color: Colors.grey),),),
+            child: Padding(padding: EdgeInsets.only(left: 10),child: Text('$ListStr', style: TextStyle(color: Colors.grey),),),
             decoration: BoxDecoration(color: Colors.black,
                 borderRadius: BorderRadius.horizontal(
                   left: Radius.circular(7),
@@ -461,16 +485,37 @@ class _3DState extends State<tree_D> {
           ),
           Padding(padding: EdgeInsets.all(10)),
           Container(width: MediaQuery.of(context).size.width * 0.8, height: 30, alignment: Alignment.centerLeft, child: Row(children: [Text('Pilot name', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), InfoButton(infoMessage: 'blank message')],),),
-          Container(alignment: Alignment.centerLeft, width: MediaQuery.of(context).size.width * 0.8, height: 40,
-            child: Padding(padding: EdgeInsets.only(left: 10),child: Text('', style: TextStyle(color: Colors.grey),),),
-            decoration: BoxDecoration(color: Colors.black,
+            Container(
+              alignment: Alignment.centerLeft,
+              width: MediaQuery.of(context).size.width * 0.8,
+              height: 40,
+              child: Padding(
+                padding: EdgeInsets.only(left: 10),
+                child: TextField(
+                  controller: _controllerPilot,
+                  style: TextStyle(color: Colors.grey),
+                  decoration: InputDecoration(
+                    border: InputBorder.none, // Удаление стандартной рамки
+                    hintText: 'Введите значение', // Подсказка, когда поле пустое
+                    hintStyle: TextStyle(color: Colors.grey),
+                  ),
+                  onChanged: (text) {
+                    var newValue = double.tryParse(text);
+                    if (newValue != null) {
+                        _controllerPilot.text = newValue.toStringAsFixed(0);
+                    }
+                  },
+                ),
+              ),
+              decoration: BoxDecoration(
+                color: Colors.black,
                 borderRadius: BorderRadius.horizontal(
                   left: Radius.circular(7),
-                  right: Radius.circular(7),// Скругление слева
-                  // Если вам нужно скругление справа, используйте right: Radius.circular(20)
+                  right: Radius.circular(7), // Скругление слева
                 ),
-                border: Border.all(color: Color.fromARGB(255, 109, 113, 120), width: 1)),
-          ),
+                border: Border.all(color: Color.fromARGB(255, 109, 113, 120), width: 1),
+              ),
+            ),
           Padding(padding: EdgeInsets.all(30)),
         ],),)
       ,)

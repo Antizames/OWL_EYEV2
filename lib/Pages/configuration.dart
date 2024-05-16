@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:object_3d/object_3d.dart';
 
 class Configuration extends StatefulWidget {
   @override
@@ -60,10 +59,6 @@ class _ConfigurationState extends State<Configuration> {
                     angle: rotateY,
                     child: Transform.rotate(
                       angle: rotateZ,
-                      child: Object3D(
-                        path: ('Assets/3D/lego.obj'),
-                        size: Size(200, 200)
-                      ),
                     ),
                   ),
                 ),
