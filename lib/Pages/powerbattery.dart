@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class PowerBattery extends StatefulWidget{
   const PowerBattery({super.key});
 
@@ -43,28 +43,27 @@ class _PowerBatteryState extends State<PowerBattery> {
   }
   Widget _buildSidebarMenu(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.only(
+      borderRadius: const BorderRadius.only(
         topRight: Radius.circular(13), // Применяем скругление к Material
         bottomRight: Radius.circular(13),
       ),
       child: Material(
-        // Это обеспечивает правильные тему и отображение текста кнопок
         child: Container(
-          width: MediaQuery.of(context).size.width * 0.8, // ширина панели, например 80% от ширины экрана
+          width: MediaQuery.of(context).size.width * 0.8,
           height: MediaQuery.of(context).size.height, // на всю высоту
           color: Colors.white, // Цвет фона контейнера
           child: Column(
             children: [
-              Padding(padding: EdgeInsets.all(10)),
+              const Padding(padding: EdgeInsets.all(10)),
               ListTile(
-                leading: Icon(Icons.navigation),
-                title: Text('Навигация'),
+                leading: const Icon(Icons.navigation),
+                title: const Text('Навигация'),
                 onTap: () {
                   Navigator.pushReplacementNamed(context, '/');
                 },
               ),
               ListTile(
-                leading: Icon(Icons.settings),
+                leading: Icon(FontAwesomeIcons.microchip),
                 title: Text('Конфигурация'),
                 onTap: () {
                   Navigator.pushReplacementNamed(context, '/3d');
@@ -72,7 +71,7 @@ class _PowerBatteryState extends State<PowerBattery> {
               ),
               ListTile(
                 leading: Icon(Icons.battery_charging_full),
-                title: Text('Батарея'),
+                title: Text('Питание и Батарея'),
                 onTap: () {
                   Navigator.pushReplacementNamed(context, '/poba');
                 },
@@ -85,23 +84,17 @@ class _PowerBatteryState extends State<PowerBattery> {
                 },
               ),
               ListTile(
-                leading: Icon(Icons.sports_motorsports),
-                title: Text('Серво'),
+                leading: Icon(FontAwesomeIcons.gears),
+                title: Text('Сервоприводы'),
                 onTap: () {
                   Navigator.pushReplacementNamed(context, '/ser');
                 },
               ),
               ListTile(
-                leading: Icon(Icons.sports_motorsports),
+                leading: Icon(FontAwesomeIcons.fan),
                 title: Text('Моторы'),
                 onTap: () {
                   Navigator.pushReplacementNamed(context, '/tele');
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.report_problem),
-                title: Text('Сообщить об ошибке'),
-                onTap: () {
                 },
               ),
             ],
@@ -200,7 +193,7 @@ class _PowerBatteryState extends State<PowerBattery> {
           ]),
           Padding(padding: EdgeInsets.all(10)),
           Container(width: MediaQuery.of(context).size.width * 0.8, height: 80, alignment: Alignment.centerLeft, child: Text('Battery', style: TextStyle(color: Colors.black, fontSize: 24),),),
-          Container(width: MediaQuery.of(context).size.width * 0.8, height: 30, alignment: Alignment.centerLeft, child: Row(children: [Text('Voltage Meter Source', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), InfoButton(infoMessage: 'blank message')],),),
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 30, alignment: Alignment.centerLeft, child: Row(children: [Text('Voltage Meter Source', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), ],),),
           Container(width: MediaQuery.of(context).size.width * 0.8, height: 40,
             decoration: BoxDecoration(color: Colors.black,
                 borderRadius: BorderRadius.horizontal(
@@ -237,7 +230,7 @@ class _PowerBatteryState extends State<PowerBattery> {
             ],)
         ),
         Padding(padding: EdgeInsets.all(10)),
-          Container(width: MediaQuery.of(context).size.width * 0.8, height: 30, alignment: Alignment.centerLeft, child: Row(children: [Text('Current Meter Source', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), InfoButton(infoMessage: 'blank message')],),),
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 30, alignment: Alignment.centerLeft, child: Row(children: [Text('Current Meter Source', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), ],),),
           Container(width: MediaQuery.of(context).size.width * 0.8, height: 40,
             decoration: BoxDecoration(color: Colors.black,
                 borderRadius: BorderRadius.horizontal(
@@ -274,7 +267,7 @@ class _PowerBatteryState extends State<PowerBattery> {
             ],)
         ),
         Padding(padding: EdgeInsets.all(10)),
-          Container(width: MediaQuery.of(context).size.width * 0.8, height: 30, alignment: Alignment.centerLeft, child: Row(children: [Text('Minimum Cell Voltage', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), InfoButton(infoMessage: 'blank message')],),),
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 30, alignment: Alignment.centerLeft, child: Row(children: [Text('Minimum Cell Voltage', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), ],),),
         RollTextField(
           minValue: 1,
           maxValue: 5,
@@ -302,7 +295,7 @@ class _PowerBatteryState extends State<PowerBattery> {
             },
           ),),
         Padding(padding: EdgeInsets.all(10)),
-          Container(width: MediaQuery.of(context).size.width * 0.8, height: 30, alignment: Alignment.centerLeft, child: Row(children: [Text('Maximum Cell Voltage', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), InfoButton(infoMessage: 'blank message')],),),
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 30, alignment: Alignment.centerLeft, child: Row(children: [Text('Maximum Cell Voltage', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), ],),),
         RollTextField(
           minValue: 1,
           maxValue: 5,
@@ -330,7 +323,7 @@ class _PowerBatteryState extends State<PowerBattery> {
             },
           ),),
         Padding(padding: EdgeInsets.all(10)),
-          Container(width: MediaQuery.of(context).size.width * 0.8, height: 30, alignment: Alignment.centerLeft, child: Row(children: [Text('Warning Cell Voltage', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), InfoButton(infoMessage: 'blank message')],),),
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 30, alignment: Alignment.centerLeft, child: Row(children: [Text('Warning Cell Voltage', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), ],),),
         RollTextField(
           minValue: 1,
           maxValue: 5,
@@ -358,7 +351,7 @@ class _PowerBatteryState extends State<PowerBattery> {
             },
           ),),
         Padding(padding: EdgeInsets.all(10)),
-          Container(width: MediaQuery.of(context).size.width * 0.8, height: 30, alignment: Alignment.centerLeft, child: Row(children: [Text('Capacity (mAh)', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), InfoButton(infoMessage: 'blank message')],),),
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 30, alignment: Alignment.centerLeft, child: Row(children: [Text('Capacity (mAh)', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), ],),),
         RollTextField(
           minValue: 0,
           maxValue: 20000,
@@ -404,7 +397,7 @@ class _PowerBatteryState extends State<PowerBattery> {
             Padding(padding: EdgeInsets.all(5)),
           ],),),
           Padding(padding: EdgeInsets.all(10)),
-          Container(width: MediaQuery.of(context).size.width * 0.8, height: 30, alignment: Alignment.centerLeft, child: Row(children: [Text('Scale', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), InfoButton(infoMessage: 'blank message')],),),
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 30, alignment: Alignment.centerLeft, child: Row(children: [Text('Scale', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), ],),),
         RollTextField(
           minValue: 10,
           maxValue: 255,
@@ -432,7 +425,7 @@ class _PowerBatteryState extends State<PowerBattery> {
             },
           ),),
         Padding(padding: EdgeInsets.all(10)),
-          Container(width: MediaQuery.of(context).size.width * 0.8, height: 30, alignment: Alignment.centerLeft, child: Row(children: [Text('Divider Value', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), InfoButton(infoMessage: 'blank message')],),),
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 30, alignment: Alignment.centerLeft, child: Row(children: [Text('Divider Value', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), ],),),
         RollTextField(
           minValue: 1,
           maxValue: 255,
@@ -480,7 +473,7 @@ class _PowerBatteryState extends State<PowerBattery> {
             },
           ),),
         Padding(padding: EdgeInsets.all(10)),
-          Container(width: MediaQuery.of(context).size.width * 0.8, height: 30, alignment: Alignment.centerLeft, child: Row(children: [Text('Multiplier Value', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), InfoButton(infoMessage: 'blank message')],),),
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 30, alignment: Alignment.centerLeft, child: Row(children: [Text('Multiplier Value', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), ],),),
         RollTextField(
           minValue: 1,
           maxValue: 255,
@@ -545,7 +538,7 @@ class _PowerBatteryState extends State<PowerBattery> {
             Padding(padding: EdgeInsets.all(5)),
           ],),),
         Padding(padding: EdgeInsets.all(10)),
-          Container(width: MediaQuery.of(context).size.width * 0.8, height: 30, alignment: Alignment.centerLeft, child: Row(children: [Text('Scale [1/10th mV/A]', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), InfoButton(infoMessage: 'blank message')],),),
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 30, alignment: Alignment.centerLeft, child: Row(children: [Text('Scale [1/10th mV/A]', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), ],),),
         RollTextField(
           minValue: -16000,
           maxValue: 16000,
@@ -573,7 +566,7 @@ class _PowerBatteryState extends State<PowerBattery> {
             },
           ),),
         Padding(padding: EdgeInsets.all(10)),
-          Container(width: MediaQuery.of(context).size.width * 0.8, height: 30, alignment: Alignment.centerLeft, child: Row(children: [Text('Offset [mA]', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), InfoButton(infoMessage: 'blank message')],),),
+          Container(width: MediaQuery.of(context).size.width * 0.8, height: 30, alignment: Alignment.centerLeft, child: Row(children: [Text('Offset [mA]', style: TextStyle(color: Colors.black, fontSize: 18),), Padding(padding: EdgeInsets.all(3)), ],),),
         RollTextField(
           minValue: -32000,
           maxValue: 32000,
@@ -1066,13 +1059,10 @@ void showHintDialog(BuildContext context) {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end, // Сдвигаем содержимое вниз
                   children: [
-                    Container(width: 150, height: 400, child:
-                    SvgPicture.asset('Assets/Images/Draf.svg'),),
+                    const Padding(padding: EdgeInsets.all(5)),
                     Expanded(child: Text(
-                      "Превышаешь лимит в 25.5V. Сбрасываю настройки",style: TextStyle(fontSize: 16),
+                      "Превышаешь лимит в 25.5V. Сбрасываю настройки",style: TextStyle(fontSize: 24),
                     ),)
-
-
                   ],
                 ),
               ),

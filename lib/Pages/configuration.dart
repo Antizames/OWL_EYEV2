@@ -14,7 +14,7 @@ class _ConfigurationState extends State<Configuration> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [Color.fromARGB(255, 233, 237, 245), Color.fromARGB(255, 149, 152, 158)],
             begin: Alignment.topCenter,
@@ -25,7 +25,7 @@ class _ConfigurationState extends State<Configuration> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Padding(padding: EdgeInsets.all(20)),
+              const Padding(padding: EdgeInsets.all(20)),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -35,7 +35,7 @@ class _ConfigurationState extends State<Configuration> {
                     },
                     child: Icon(Icons.menu, color: Colors.grey.shade600),
                   ),
-                  Column(
+                  const Column(
                     children: [
                       Text('Дрон', style: TextStyle(fontSize: 15, color: Colors.grey)),
                     ],
@@ -48,7 +48,7 @@ class _ConfigurationState extends State<Configuration> {
                   ),
                 ],
               ),
-              Padding(padding: EdgeInsets.all(20)),
+              const Padding(padding: EdgeInsets.all(20)),
               InteractiveViewer(
                 boundaryMargin: EdgeInsets.all(50),
                 minScale: 0.1,

@@ -26,10 +26,19 @@ dependencies:
   flutter_libserialport:
   font_awesome_flutter:
   flutter_launcher_icons:
+  flutter_native_splash:
+
 flutter_icons:
   android: true
   ios: true
   image_path: "Assets/Images/OWLogoApp.png"
+
+flutter_native_splash:
+  color: "#d1d4dc"
+  image: Assets/Images/OWLogoi.png
+  android: true
+  ios: true
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -47,7 +56,6 @@ flutter:
     - Assets/Images/D1Dron4i.svg
     - Assets/Images/trash.svg
     - Assets/Images/Dron4iDevushka.svg
-    - Assets/3D/lego.obj
     - Assets/Images/Draf.svg
     - Assets/Images/Accum.svg
     - Assets/Images/Drone1.svg
@@ -56,6 +64,7 @@ flutter:
     - Assets/Images/Port.svg
     - Assets/Images/Motor.svg
     - Assets/Images/OWLogoApp.png
+    - Assets/Images/Backowl.png
 
 
 

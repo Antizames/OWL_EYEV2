@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +8,7 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'package:usb_serial/usb_serial.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class Setup extends StatefulWidget {
   @override
   State<Setup> createState() => _SetupState();
@@ -385,28 +385,27 @@ int index = -1;
 
   Widget _buildSidebarMenu(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.only(
+      borderRadius: const BorderRadius.only(
         topRight: Radius.circular(13), // Применяем скругление к Material
         bottomRight: Radius.circular(13),
       ),
       child: Material(
-        // Это обеспечивает правильные тему и отображение текста кнопок
         child: Container(
-          width: MediaQuery.of(context).size.width * 0.8, // ширина панели, например 80% от ширины экрана
+          width: MediaQuery.of(context).size.width * 0.8,
           height: MediaQuery.of(context).size.height, // на всю высоту
           color: Colors.white, // Цвет фона контейнера
           child: Column(
             children: [
-              Padding(padding: EdgeInsets.all(10)),
+              const Padding(padding: EdgeInsets.all(10)),
               ListTile(
-                leading: Icon(Icons.navigation),
-                title: Text('Навигация'),
+                leading: const Icon(Icons.navigation),
+                title: const Text('Навигация'),
                 onTap: () {
                   Navigator.pushReplacementNamed(context, '/');
                 },
               ),
               ListTile(
-                leading: Icon(Icons.settings),
+                leading: Icon(FontAwesomeIcons.microchip),
                 title: Text('Конфигурация'),
                 onTap: () {
                   Navigator.pushReplacementNamed(context, '/3d');
@@ -414,7 +413,7 @@ int index = -1;
               ),
               ListTile(
                 leading: Icon(Icons.battery_charging_full),
-                title: Text('Батарея'),
+                title: Text('Питание и Батарея'),
                 onTap: () {
                   Navigator.pushReplacementNamed(context, '/poba');
                 },
@@ -427,23 +426,17 @@ int index = -1;
                 },
               ),
               ListTile(
-                leading: Icon(Icons.sports_motorsports),
-                title: Text('Серво'),
+                leading: Icon(FontAwesomeIcons.gears),
+                title: Text('Сервоприводы'),
                 onTap: () {
                   Navigator.pushReplacementNamed(context, '/ser');
                 },
               ),
               ListTile(
-                leading: Icon(Icons.sports_motorsports),
+                leading: Icon(FontAwesomeIcons.fan),
                 title: Text('Моторы'),
                 onTap: () {
                   Navigator.pushReplacementNamed(context, '/tele');
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.report_problem),
-                title: Text('Сообщить об ошибке'),
-                onTap: () {
                 },
               ),
             ],
@@ -1197,13 +1190,10 @@ class HintDialog extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end, // Сдвигаем содержимое вниз
                     children: [
-                      Container(width: 150, child:
-                      SvgPicture.asset('Assets/Images/Dron4iDevushka.svg'),),
+                      const Padding(padding: EdgeInsets.all(5)),
                     Expanded(child: Text(
-                      "При нажатии на карту появится маркер, при его удержании откроется меню маркера",style: TextStyle(fontSize: 12),
+                      "При нажатии на карту появится маркер, при его удержании откроется меню маркера",style: TextStyle(fontSize: 24),
                     ),)
-
-
                     ],
                   ),
                 ),

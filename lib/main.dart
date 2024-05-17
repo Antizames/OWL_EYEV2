@@ -10,15 +10,15 @@ import 'package:owl/Pages/servo.dart';
 import 'package:owl/Pages/Telemetria.dart';
 void main() => runApp(MaterialApp(
   theme: ThemeData(primaryColor: Colors.black12, fontFamily: 'Lato'),
-  initialRoute: '/3d',
+  initialRoute: '/vid',
   routes: {
     '/': (context) => Setup(),
-    '/fail': (context) => FailSafe(),
-    '/port': (context) => Ports(),
-    '/poba': (context) => PowerBattery(),
+    '/fail': (context) => const FailSafe(),
+    '/port': (context) => const Ports(),
+    '/poba': (context) => const PowerBattery(),
     '/conf': (context) => Configuration(),
-    '/vid': (context) => Video(),
-    '/3d': (context) => tree_D(),
-    '/ser': (context) => Servo(),
-    '/tele': (context) => Tele(),
+    '/vid': (context) => const Video(),
+    '/3d': (context) => const tree_D(),
+    '/ser': (context) => const Servo(),
+    '/tele': (context) => const Tele(),
   },));

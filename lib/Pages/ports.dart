@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class Ports extends StatefulWidget{
   const Ports({super.key});
 
@@ -79,28 +79,27 @@ class _PortsState extends State<Ports> {
   String ua3perRight = 'AUTO';
   Widget _buildSidebarMenu(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.only(
+      borderRadius: const BorderRadius.only(
         topRight: Radius.circular(13), // Применяем скругление к Material
         bottomRight: Radius.circular(13),
       ),
       child: Material(
-        // Это обеспечивает правильные тему и отображение текста кнопок
         child: Container(
-          width: MediaQuery.of(context).size.width * 0.8, // ширина панели, например 80% от ширины экрана
+          width: MediaQuery.of(context).size.width * 0.8,
           height: MediaQuery.of(context).size.height, // на всю высоту
           color: Colors.white, // Цвет фона контейнера
           child: Column(
             children: [
-              Padding(padding: EdgeInsets.all(10)),
+              const Padding(padding: EdgeInsets.all(10)),
               ListTile(
-                leading: Icon(Icons.navigation),
-                title: Text('Навигация'),
+                leading: const Icon(Icons.navigation),
+                title: const Text('Навигация'),
                 onTap: () {
                   Navigator.pushReplacementNamed(context, '/');
                 },
               ),
               ListTile(
-                leading: Icon(Icons.settings),
+                leading: Icon(FontAwesomeIcons.microchip),
                 title: Text('Конфигурация'),
                 onTap: () {
                   Navigator.pushReplacementNamed(context, '/3d');
@@ -108,7 +107,7 @@ class _PortsState extends State<Ports> {
               ),
               ListTile(
                 leading: Icon(Icons.battery_charging_full),
-                title: Text('Батарея'),
+                title: Text('Питание и Батарея'),
                 onTap: () {
                   Navigator.pushReplacementNamed(context, '/poba');
                 },
@@ -121,23 +120,17 @@ class _PortsState extends State<Ports> {
                 },
               ),
               ListTile(
-                leading: Icon(Icons.sports_motorsports),
-                title: Text('Серво'),
+                leading: Icon(FontAwesomeIcons.gears),
+                title: Text('Сервоприводы'),
                 onTap: () {
                   Navigator.pushReplacementNamed(context, '/ser');
                 },
               ),
               ListTile(
-                leading: Icon(Icons.sports_motorsports),
+                leading: Icon(FontAwesomeIcons.fan),
                 title: Text('Моторы'),
                 onTap: () {
                   Navigator.pushReplacementNamed(context, '/tele');
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.report_problem),
-                title: Text('Сообщить об ошибке'),
-                onTap: () {
                 },
               ),
             ],
@@ -160,12 +153,12 @@ class _PortsState extends State<Ports> {
     return Scaffold(
         body:
         Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
                 gradient: LinearGradient(
                     colors: [Color.fromARGB(255, 233, 237, 245), Color.fromARGB(255, 149, 152, 158,)],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter)), child: SingleChildScrollView(child: Column(children: [
-          Padding(padding: EdgeInsets.all(20)),
+          const Padding(padding: EdgeInsets.all(20)),
           Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
             DeformableButton(
               onPressed: (){_openSidebarMenu(context);},
@@ -176,7 +169,7 @@ class _PortsState extends State<Ports> {
                   end: Alignment.bottomRight
               ),
             ),
-            Column(children: [
+            const Column(children: [
               Text('Дрон', style: TextStyle(fontSize: 15, color: Colors.grey),),
               Text('Порты', style: TextStyle(fontSize: 15, color: Colors.black)),
             ],),
@@ -190,13 +183,13 @@ class _PortsState extends State<Ports> {
               ),
             ),
           ]),
-          Padding(padding: EdgeInsets.all(10)),
+          const Padding(padding: EdgeInsets.all(10)),
           Column(children:[
-            Padding(padding: EdgeInsets.all(10)),
-            Divider(color: Colors.black),
-            Text('USB VCP', style: TextStyle(fontSize: 24),),
+            const Padding(padding: EdgeInsets.all(10)),
+            const Divider(color: Colors.black),
+            const Text('USB VCP', style: TextStyle(fontSize: 24),),
             Row(mainAxisAlignment: MainAxisAlignment.spaceAround,children:[
-              Text('Конфигурация и MSP'),
+              const   Text('Конфигурация и MSP'),
               Switch(value: usmspSwitch, onChanged: (value){setState(() {
                 usmspSwitch = value;
               });}, activeColor: Colors.white70,  inactiveThumbColor: Colors.grey, activeTrackColor: Color.fromARGB(255,252,128,33), inactiveTrackColor: Colors.white70,)
@@ -205,7 +198,7 @@ class _PortsState extends State<Ports> {
 
             Container(width: MediaQuery.of(context).size.width * 0.6, height: 40,
                 decoration: BoxDecoration(color: Colors.black,
-                    borderRadius: BorderRadius.horizontal(
+                    borderRadius: const BorderRadius.horizontal(
                       left: Radius.circular(7),
                       right: Radius.circular(7),// Скругление слева
                     ),
@@ -239,17 +232,17 @@ class _PortsState extends State<Ports> {
                 ],)
             ),
             Row(mainAxisAlignment: MainAxisAlignment.spaceAround,children:[
-              Text('Serial Rx'),
+              const Text('Serial Rx'),
               Switch(value: usserSwitch, onChanged: (value){setState(() {
                 usserSwitch = value;
               });}, activeColor: Colors.white70,  inactiveThumbColor: Colors.grey, activeTrackColor: Color.fromARGB(255,252,128,33), inactiveTrackColor: Colors.white70,),
             ]),
-            Center(child: Text('Выход телеметрии'),),
-            Padding(padding: EdgeInsets.all(3)),
+            const Center(child: Text('Выход телеметрии'),),
+            const Padding(padding: EdgeInsets.all(3)),
             Row(mainAxisAlignment:MainAxisAlignment.spaceAround,children: [
               Container(width: MediaQuery.of(context).size.width * 0.45, height: 40,
                   decoration: BoxDecoration(color: Colors.black,
-                      borderRadius: BorderRadius.horizontal(
+                      borderRadius: const BorderRadius.horizontal(
                         left: Radius.circular(7),
                         right: Radius.circular(7),// Скругление слева
                       ),
@@ -284,7 +277,7 @@ class _PortsState extends State<Ports> {
               ),
               Container(width: MediaQuery.of(context).size.width * 0.45, height: 40,
                   decoration: BoxDecoration(color: Colors.black,
-                      borderRadius: BorderRadius.horizontal(
+                      borderRadius: const BorderRadius.horizontal(
                         left: Radius.circular(7),
                         right: Radius.circular(7),// Скругление слева
                       ),
@@ -318,13 +311,13 @@ class _PortsState extends State<Ports> {
                   ],)
               ),
             ],),
-            Padding(padding: EdgeInsets.all(5)),
-            Text('Вход датчиков'),
-            Padding(padding: EdgeInsets.all(3)),
+            const Padding(padding: EdgeInsets.all(5)),
+            const Text('Вход датчиков'),
+            const Padding(padding: EdgeInsets.all(3)),
             Row(mainAxisAlignment:MainAxisAlignment.spaceAround,children: [
               Container(width: MediaQuery.of(context).size.width * 0.45, height: 40,
                   decoration: BoxDecoration(color: Colors.black,
-                      borderRadius: BorderRadius.horizontal(
+                      borderRadius: const BorderRadius.horizontal(
                         left: Radius.circular(7),
                         right: Radius.circular(7),// Скругление слева
                       ),
@@ -359,7 +352,7 @@ class _PortsState extends State<Ports> {
               ),
               Container(width: MediaQuery.of(context).size.width * 0.45, height: 40,
                   decoration: BoxDecoration(color: Colors.black,
-                      borderRadius: BorderRadius.horizontal(
+                      borderRadius: const BorderRadius.horizontal(
                         left: Radius.circular(7),
                         right: Radius.circular(7),// Скругление слева
                       ),
@@ -392,13 +385,13 @@ class _PortsState extends State<Ports> {
                     ),
                   ],)
               ),],),
-            Padding(padding: EdgeInsets.all(5)),
-            Text('Периферия'),
-            Padding(padding: EdgeInsets.all(3)),
+            const Padding(padding: EdgeInsets.all(5)),
+            const Text('Периферия'),
+            const Padding(padding: EdgeInsets.all(3)),
             Row(mainAxisAlignment:MainAxisAlignment.spaceAround,children: [
               Container(width: MediaQuery.of(context).size.width * 0.45, height: 40,
                   decoration: BoxDecoration(color: Colors.black,
-                      borderRadius: BorderRadius.horizontal(
+                      borderRadius: const BorderRadius.horizontal(
                         left: Radius.circular(7),
                         right: Radius.circular(7),// Скругление слева
                       ),
@@ -433,7 +426,7 @@ class _PortsState extends State<Ports> {
               ),
               Container(width: MediaQuery.of(context).size.width * 0.45, height: 40,
                   decoration: BoxDecoration(color: Colors.black,
-                      borderRadius: BorderRadius.horizontal(
+                      borderRadius: const BorderRadius.horizontal(
                         left: Radius.circular(7),
                         right: Radius.circular(7),// Скругление слева
                       ),
@@ -468,13 +461,13 @@ class _PortsState extends State<Ports> {
               ),
             ],),
           ]),
-          Padding(padding: EdgeInsets.all(10)),
+          const Padding(padding: EdgeInsets.all(10)),
           Column(children:[
-            Padding(padding: EdgeInsets.all(10)),
-            Divider(color: Colors.black),
-            Text('UART1', style: TextStyle(fontSize: 24),),
+            const Padding(padding: EdgeInsets.all(10)),
+            const Divider(color: Colors.black),
+            const Text('UART1', style: TextStyle(fontSize: 24),),
             Row(mainAxisAlignment: MainAxisAlignment.spaceAround,children:[
-              Text('Конфигурация и MSP'),
+              const Text('Конфигурация и MSP'),
               Switch(value: ua1mspSwitch, onChanged: (value){setState(() {
                 ua1mspSwitch = value;
               });}, activeColor: Colors.white70,  inactiveThumbColor: Colors.grey, activeTrackColor: Color.fromARGB(255,252,128,33), inactiveTrackColor: Colors.white70,)
@@ -483,11 +476,11 @@ class _PortsState extends State<Ports> {
 
             Container(width: MediaQuery.of(context).size.width * 0.6, height: 40,
                 decoration: BoxDecoration(color: Colors.black,
-                    borderRadius: BorderRadius.horizontal(
+                    borderRadius: const BorderRadius.horizontal(
                       left: Radius.circular(7),
                       right: Radius.circular(7),// Скругление слева
                     ),
-                    border: Border.all(color: Color.fromARGB(255, 109, 113, 120), width: 1)),
+                    border: Border.all(color: const Color.fromARGB(255, 109, 113, 120), width: 1)),
                 child: Stack(children: [
                   DropdownButtonHideUnderline( // Убирает подчёркивание у DropdownButton
                     child: ButtonTheme(
@@ -517,17 +510,17 @@ class _PortsState extends State<Ports> {
                 ],)
             ),
             Row(mainAxisAlignment: MainAxisAlignment.spaceAround,children:[
-              Text('Serial Rx'),
+              const Text('Serial Rx'),
               Switch(value: ua1serSwitch, onChanged: (value){setState(() {
                 ua1serSwitch = value;
-              });}, activeColor: Colors.white70,  inactiveThumbColor: Colors.grey, activeTrackColor: Color.fromARGB(255,252,128,33), inactiveTrackColor: Colors.white70,),
+              });}, activeColor: Colors.white70,  inactiveThumbColor: Colors.grey, activeTrackColor: const Color.fromARGB(255,252,128,33), inactiveTrackColor: Colors.white70,),
             ]),
-            Center(child: Text('Выход телеметрии'),),
-            Padding(padding: EdgeInsets.all(3)),
+            const Center(child: Text('Выход телеметрии'),),
+            const Padding(padding: EdgeInsets.all(3)),
             Row(mainAxisAlignment:MainAxisAlignment.spaceAround,children: [
               Container(width: MediaQuery.of(context).size.width * 0.45, height: 40,
                   decoration: BoxDecoration(color: Colors.black,
-                      borderRadius: BorderRadius.horizontal(
+                      borderRadius: const BorderRadius.horizontal(
                         left: Radius.circular(7),
                         right: Radius.circular(7),// Скругление слева
                       ),
@@ -562,11 +555,11 @@ class _PortsState extends State<Ports> {
               ),
               Container(width: MediaQuery.of(context).size.width * 0.45, height: 40,
                   decoration: BoxDecoration(color: Colors.black,
-                      borderRadius: BorderRadius.horizontal(
+                      borderRadius: const BorderRadius.horizontal(
                         left: Radius.circular(7),
                         right: Radius.circular(7),// Скругление слева
                       ),
-                      border: Border.all(color: Color.fromARGB(255, 109, 113, 120), width: 1)),
+                      border: Border.all(color: const Color.fromARGB(255, 109, 113, 120), width: 1)),
                   child: Stack(children: [
                     DropdownButtonHideUnderline( // Убирает подчёркивание у DropdownButton
                       child: ButtonTheme(
@@ -596,17 +589,17 @@ class _PortsState extends State<Ports> {
                   ],)
               ),
             ],),
-            Padding(padding: EdgeInsets.all(5)),
-            Text('Вход датчиков'),
-            Padding(padding: EdgeInsets.all(3)),
+            const Padding(padding: EdgeInsets.all(5)),
+            const Text('Вход датчиков'),
+            const Padding(padding: EdgeInsets.all(3)),
             Row(mainAxisAlignment:MainAxisAlignment.spaceAround,children: [
               Container(width: MediaQuery.of(context).size.width * 0.45, height: 40,
                   decoration: BoxDecoration(color: Colors.black,
-                      borderRadius: BorderRadius.horizontal(
+                      borderRadius: const BorderRadius.horizontal(
                         left: Radius.circular(7),
                         right: Radius.circular(7),// Скругление слева
                       ),
-                      border: Border.all(color: Color.fromARGB(255, 109, 113, 120), width: 1)),
+                      border: Border.all(color: const Color.fromARGB(255, 109, 113, 120), width: 1)),
                   child: Stack(children: [
                     DropdownButtonHideUnderline( // Убирает подчёркивание у DropdownButton
                       child: ButtonTheme(
@@ -637,11 +630,11 @@ class _PortsState extends State<Ports> {
               ),
               Container(width: MediaQuery.of(context).size.width * 0.45, height: 40,
                   decoration: BoxDecoration(color: Colors.black,
-                      borderRadius: BorderRadius.horizontal(
+                      borderRadius: const BorderRadius.horizontal(
                         left: Radius.circular(7),
                         right: Radius.circular(7),// Скругление слева
                       ),
-                      border: Border.all(color: Color.fromARGB(255, 109, 113, 120), width: 1)),
+                      border: Border.all(color: const Color.fromARGB(255, 109, 113, 120), width: 1)),
                   child: Stack(children: [
                     DropdownButtonHideUnderline( // Убирает подчёркивание у DropdownButton
                       child: ButtonTheme(
@@ -670,13 +663,13 @@ class _PortsState extends State<Ports> {
                     ),
                   ],)
               ),],),
-            Padding(padding: EdgeInsets.all(5)),
-            Text('Периферия'),
-            Padding(padding: EdgeInsets.all(3)),
+            const Padding(padding: EdgeInsets.all(5)),
+            const Text('Периферия'),
+            const Padding(padding: EdgeInsets.all(3)),
             Row(mainAxisAlignment:MainAxisAlignment.spaceAround,children: [
               Container(width: MediaQuery.of(context).size.width * 0.45, height: 40,
                   decoration: BoxDecoration(color: Colors.black,
-                      borderRadius: BorderRadius.horizontal(
+                      borderRadius: const BorderRadius.horizontal(
                         left: Radius.circular(7),
                         right: Radius.circular(7),// Скругление слева
                       ),
@@ -711,7 +704,7 @@ class _PortsState extends State<Ports> {
               ),
               Container(width: MediaQuery.of(context).size.width * 0.45, height: 40,
                   decoration: BoxDecoration(color: Colors.black,
-                      borderRadius: BorderRadius.horizontal(
+                      borderRadius: const BorderRadius.horizontal(
                         left: Radius.circular(7),
                         right: Radius.circular(7),// Скругление слева
                       ),
@@ -746,22 +739,22 @@ class _PortsState extends State<Ports> {
               ),
             ],),
           ]),
-          Padding(padding: EdgeInsets.all(10)),
+          const Padding(padding: EdgeInsets.all(10)),
           Column(children:[
-            Padding(padding: EdgeInsets.all(10)),
-            Divider(color: Colors.black),
-            Text('UART2', style: TextStyle(fontSize: 24),),
+            const Padding(padding: EdgeInsets.all(10)),
+            const Divider(color: Colors.black),
+            const Text('UART2', style: TextStyle(fontSize: 24),),
             Row(mainAxisAlignment: MainAxisAlignment.spaceAround,children:[
-              Text('Конфигурация и MSP'),
+              const Text('Конфигурация и MSP'),
               Switch(value: ua2mspSwitch, onChanged: (value){setState(() {
                 ua2mspSwitch = value;
-              });}, activeColor: Colors.white70,  inactiveThumbColor: Colors.grey, activeTrackColor: Color.fromARGB(255,252,128,33), inactiveTrackColor: Colors.white70,)
+              });}, activeColor: Colors.white70,  inactiveThumbColor: Colors.grey, activeTrackColor: const Color.fromARGB(255,252,128,33), inactiveTrackColor: Colors.white70,)
 
             ]),
 
             Container(width: MediaQuery.of(context).size.width * 0.6, height: 40,
                 decoration: BoxDecoration(color: Colors.black,
-                    borderRadius: BorderRadius.horizontal(
+                    borderRadius: const BorderRadius.horizontal(
                       left: Radius.circular(7),
                       right: Radius.circular(7),// Скругление слева
                     ),
@@ -795,17 +788,17 @@ class _PortsState extends State<Ports> {
                 ],)
             ),
             Row(mainAxisAlignment: MainAxisAlignment.spaceAround,children:[
-              Text('Serial Rx'),
+              const Text('Serial Rx'),
               Switch(value: ua2serSwitch, onChanged: (value){setState(() {
                 ua2serSwitch = value;
               });}, activeColor: Colors.white70,  inactiveThumbColor: Colors.grey, activeTrackColor: Color.fromARGB(255,252,128,33), inactiveTrackColor: Colors.white70,),
             ]),
-            Center(child: Text('Выход телеметрии'),),
-            Padding(padding: EdgeInsets.all(3)),
+            const Center(child: Text('Выход телеметрии'),),
+            const Padding(padding: EdgeInsets.all(3)),
             Row(mainAxisAlignment:MainAxisAlignment.spaceAround,children: [
               Container(width: MediaQuery.of(context).size.width * 0.45, height: 40,
                   decoration: BoxDecoration(color: Colors.black,
-                      borderRadius: BorderRadius.horizontal(
+                      borderRadius: const BorderRadius.horizontal(
                         left: Radius.circular(7),
                         right: Radius.circular(7),// Скругление слева
                       ),
@@ -840,7 +833,7 @@ class _PortsState extends State<Ports> {
               ),
               Container(width: MediaQuery.of(context).size.width * 0.45, height: 40,
                   decoration: BoxDecoration(color: Colors.black,
-                      borderRadius: BorderRadius.horizontal(
+                      borderRadius: const BorderRadius.horizontal(
                         left: Radius.circular(7),
                         right: Radius.circular(7),// Скругление слева
                       ),
@@ -874,17 +867,17 @@ class _PortsState extends State<Ports> {
                   ],)
               ),
             ],),
-            Padding(padding: EdgeInsets.all(5)),
-            Text('Вход датчиков'),
-            Padding(padding: EdgeInsets.all(3)),
+            const Padding(padding: EdgeInsets.all(5)),
+            const Text('Вход датчиков'),
+            const Padding(padding: EdgeInsets.all(3)),
             Row(mainAxisAlignment:MainAxisAlignment.spaceAround,children: [
               Container(width: MediaQuery.of(context).size.width * 0.45, height: 40,
                   decoration: BoxDecoration(color: Colors.black,
-                      borderRadius: BorderRadius.horizontal(
+                      borderRadius: const BorderRadius.horizontal(
                         left: Radius.circular(7),
                         right: Radius.circular(7),// Скругление слева
                       ),
-                      border: Border.all(color: Color.fromARGB(255, 109, 113, 120), width: 1)),
+                      border: Border.all(color: const Color.fromARGB(255, 109, 113, 120), width: 1)),
                   child: Stack(children: [
                     DropdownButtonHideUnderline( // Убирает подчёркивание у DropdownButton
                       child: ButtonTheme(
@@ -915,11 +908,11 @@ class _PortsState extends State<Ports> {
               ),
               Container(width: MediaQuery.of(context).size.width * 0.45, height: 40,
                   decoration: BoxDecoration(color: Colors.black,
-                      borderRadius: BorderRadius.horizontal(
+                      borderRadius: const BorderRadius.horizontal(
                         left: Radius.circular(7),
                         right: Radius.circular(7),// Скругление слева
                       ),
-                      border: Border.all(color: Color.fromARGB(255, 109, 113, 120), width: 1)),
+                      border: Border.all(color: const Color.fromARGB(255, 109, 113, 120), width: 1)),
                   child: Stack(children: [
                     DropdownButtonHideUnderline( // Убирает подчёркивание у DropdownButton
                       child: ButtonTheme(
@@ -948,17 +941,17 @@ class _PortsState extends State<Ports> {
                     ),
                   ],)
               ),],),
-            Padding(padding: EdgeInsets.all(5)),
-            Text('Периферия'),
-            Padding(padding: EdgeInsets.all(3)),
+            const Padding(padding: EdgeInsets.all(5)),
+            const Text('Периферия'),
+            const Padding(padding: EdgeInsets.all(3)),
             Row(mainAxisAlignment:MainAxisAlignment.spaceAround,children: [
               Container(width: MediaQuery.of(context).size.width * 0.45, height: 40,
                   decoration: BoxDecoration(color: Colors.black,
-                      borderRadius: BorderRadius.horizontal(
+                      borderRadius: const BorderRadius.horizontal(
                         left: Radius.circular(7),
                         right: Radius.circular(7),// Скругление слева
                       ),
-                      border: Border.all(color: Color.fromARGB(255, 109, 113, 120), width: 1)),
+                      border: Border.all(color: const Color.fromARGB(255, 109, 113, 120), width: 1)),
                   child: Stack(children: [
                     DropdownButtonHideUnderline( // Убирает подчёркивание у DropdownButton
                       child: ButtonTheme(
@@ -989,11 +982,11 @@ class _PortsState extends State<Ports> {
               ),
               Container(width: MediaQuery.of(context).size.width * 0.45, height: 40,
                   decoration: BoxDecoration(color: Colors.black,
-                      borderRadius: BorderRadius.horizontal(
+                      borderRadius: const BorderRadius.horizontal(
                         left: Radius.circular(7),
                         right: Radius.circular(7),// Скругление слева
                       ),
-                      border: Border.all(color: Color.fromARGB(255, 109, 113, 120), width: 1)),
+                      border: Border.all(color: const Color.fromARGB(255, 109, 113, 120), width: 1)),
                   child: Stack(children: [
                     DropdownButtonHideUnderline( // Убирает подчёркивание у DropdownButton
                       child: ButtonTheme(
@@ -1024,26 +1017,26 @@ class _PortsState extends State<Ports> {
               ),
             ],),
           ]),
-          Padding(padding: EdgeInsets.all(10)),
+          const Padding(padding: EdgeInsets.all(10)),
           Column(children:[
-            Padding(padding: EdgeInsets.all(10)),
-            Divider(color: Colors.black),
-            Text('UART3', style: TextStyle(fontSize: 24),),
+            const Padding(padding: EdgeInsets.all(10)),
+            const Divider(color: Colors.black),
+            const Text('UART3', style: TextStyle(fontSize: 24),),
             Row(mainAxisAlignment: MainAxisAlignment.spaceAround,children:[
-              Text('Конфигурация и MSP'),
+              const Text('Конфигурация и MSP'),
               Switch(value: ua3mspSwitch, onChanged: (value){setState(() {
                 ua3mspSwitch = value;
-              });}, activeColor: Colors.white70,  inactiveThumbColor: Colors.grey, activeTrackColor: Color.fromARGB(255,252,128,33), inactiveTrackColor: Colors.white70,)
+              });}, activeColor: Colors.white70,  inactiveThumbColor: Colors.grey, activeTrackColor: const Color.fromARGB(255,252,128,33), inactiveTrackColor: Colors.white70,)
 
             ]),
 
             Container(width: MediaQuery.of(context).size.width * 0.6, height: 40,
                 decoration: BoxDecoration(color: Colors.black,
-                    borderRadius: BorderRadius.horizontal(
+                    borderRadius: const BorderRadius.horizontal(
                       left: Radius.circular(7),
                       right: Radius.circular(7),// Скругление слева
                     ),
-                    border: Border.all(color: Color.fromARGB(255, 109, 113, 120), width: 1)),
+                    border: Border.all(color: const Color.fromARGB(255, 109, 113, 120), width: 1)),
                 child: Stack(children: [
                   DropdownButtonHideUnderline( // Убирает подчёркивание у DropdownButton
                     child: ButtonTheme(
@@ -1073,17 +1066,17 @@ class _PortsState extends State<Ports> {
                 ],)
             ),
             Row(mainAxisAlignment: MainAxisAlignment.spaceAround,children:[
-              Text('Serial Rx'),
+              const Text('Serial Rx'),
               Switch(value: ua3serSwitch, onChanged: (value){setState(() {
                 ua3serSwitch = value;
-              });}, activeColor: Colors.white70,  inactiveThumbColor: Colors.grey, activeTrackColor: Color.fromARGB(255,252,128,33), inactiveTrackColor: Colors.white70,),
+              });}, activeColor: Colors.white70,  inactiveThumbColor: Colors.grey, activeTrackColor: const Color.fromARGB(255,252,128,33), inactiveTrackColor: Colors.white70,),
             ]),
-            Center(child: Text('Выход телеметрии'),),
-            Padding(padding: EdgeInsets.all(3)),
+            const Center(child: Text('Выход телеметрии'),),
+            const Padding(padding: EdgeInsets.all(3)),
             Row(mainAxisAlignment:MainAxisAlignment.spaceAround,children: [
               Container(width: MediaQuery.of(context).size.width * 0.45, height: 40,
                   decoration: BoxDecoration(color: Colors.black,
-                      borderRadius: BorderRadius.horizontal(
+                      borderRadius: const BorderRadius.horizontal(
                         left: Radius.circular(7),
                         right: Radius.circular(7),// Скругление слева
                       ),
@@ -1118,11 +1111,11 @@ class _PortsState extends State<Ports> {
               ),
               Container(width: MediaQuery.of(context).size.width * 0.45, height: 40,
                   decoration: BoxDecoration(color: Colors.black,
-                      borderRadius: BorderRadius.horizontal(
+                      borderRadius: const BorderRadius.horizontal(
                         left: Radius.circular(7),
                         right: Radius.circular(7),// Скругление слева
                       ),
-                      border: Border.all(color: Color.fromARGB(255, 109, 113, 120), width: 1)),
+                      border: Border.all(color: const Color.fromARGB(255, 109, 113, 120), width: 1)),
                   child: Stack(children: [
                     DropdownButtonHideUnderline( // Убирает подчёркивание у DropdownButton
                       child: ButtonTheme(
@@ -1152,17 +1145,17 @@ class _PortsState extends State<Ports> {
                   ],)
               ),
             ],),
-            Padding(padding: EdgeInsets.all(5)),
-            Text('Вход датчиков'),
-            Padding(padding: EdgeInsets.all(3)),
+            const Padding(padding: EdgeInsets.all(5)),
+            const Text('Вход датчиков'),
+            const Padding(padding: EdgeInsets.all(3)),
             Row(mainAxisAlignment:MainAxisAlignment.spaceAround,children: [
               Container(width: MediaQuery.of(context).size.width * 0.45, height: 40,
                   decoration: BoxDecoration(color: Colors.black,
-                      borderRadius: BorderRadius.horizontal(
+                      borderRadius: const BorderRadius.horizontal(
                         left: Radius.circular(7),
                         right: Radius.circular(7),// Скругление слева
                       ),
-                      border: Border.all(color: Color.fromARGB(255, 109, 113, 120), width: 1)),
+                      border: Border.all(color: const Color.fromARGB(255, 109, 113, 120), width: 1)),
                   child: Stack(children: [
                     DropdownButtonHideUnderline( // Убирает подчёркивание у DropdownButton
                       child: ButtonTheme(
@@ -1193,11 +1186,11 @@ class _PortsState extends State<Ports> {
               ),
               Container(width: MediaQuery.of(context).size.width * 0.45, height: 40,
                   decoration: BoxDecoration(color: Colors.black,
-                      borderRadius: BorderRadius.horizontal(
+                      borderRadius: const BorderRadius.horizontal(
                         left: Radius.circular(7),
                         right: Radius.circular(7),// Скругление слева
                       ),
-                      border: Border.all(color: Color.fromARGB(255, 109, 113, 120), width: 1)),
+                      border: Border.all(color: const Color.fromARGB(255, 109, 113, 120), width: 1)),
                   child: Stack(children: [
                     DropdownButtonHideUnderline( // Убирает подчёркивание у DropdownButton
                       child: ButtonTheme(
@@ -1226,17 +1219,17 @@ class _PortsState extends State<Ports> {
                     ),
                   ],)
               ),],),
-            Padding(padding: EdgeInsets.all(5)),
-            Text('Периферия'),
-            Padding(padding: EdgeInsets.all(3)),
+            const Padding(padding: EdgeInsets.all(5)),
+            const Text('Периферия'),
+            const Padding(padding: EdgeInsets.all(3)),
             Row(mainAxisAlignment:MainAxisAlignment.spaceAround,children: [
               Container(width: MediaQuery.of(context).size.width * 0.45, height: 40,
                   decoration: BoxDecoration(color: Colors.black,
-                      borderRadius: BorderRadius.horizontal(
+                      borderRadius: const BorderRadius.horizontal(
                         left: Radius.circular(7),
                         right: Radius.circular(7),// Скругление слева
                       ),
-                      border: Border.all(color: Color.fromARGB(255, 109, 113, 120), width: 1)),
+                      border: Border.all(color: const Color.fromARGB(255, 109, 113, 120), width: 1)),
                   child: Stack(children: [
                     DropdownButtonHideUnderline( // Убирает подчёркивание у DropdownButton
                       child: ButtonTheme(
@@ -1267,11 +1260,11 @@ class _PortsState extends State<Ports> {
               ),
               Container(width: MediaQuery.of(context).size.width * 0.45, height: 40,
                   decoration: BoxDecoration(color: Colors.black,
-                      borderRadius: BorderRadius.horizontal(
+                      borderRadius: const BorderRadius.horizontal(
                         left: Radius.circular(7),
                         right: Radius.circular(7),// Скругление слева
                       ),
-                      border: Border.all(color: Color.fromARGB(255, 109, 113, 120), width: 1)),
+                      border: Border.all(color: const Color.fromARGB(255, 109, 113, 120), width: 1)),
                   child: Stack(children: [
                     DropdownButtonHideUnderline( // Убирает подчёркивание у DropdownButton
                       child: ButtonTheme(
@@ -1302,7 +1295,7 @@ class _PortsState extends State<Ports> {
               ),
             ],),
           ]),
-          Padding(padding: EdgeInsets.all(10)),
+          const Padding(padding: EdgeInsets.all(10)),
         ])))
         );
   }
