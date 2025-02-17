@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:owl/Pages/failsafe.dart';
-import 'package:owl/Pages/powerbattery.dart';
-import 'package:owl/Pages/ports.dart';
-import 'package:owl/Pages/configuration.dart';
-import 'package:owl/Pages/home.dart';
-import 'package:owl/Pages/video.dart';
-import 'package:owl/Pages/_3D.dart';
-import 'package:owl/Pages/servo.dart';
-import 'package:owl/Pages/Telemetria.dart';
+import 'package:owl/pages/battery/screen/powerbattery.dart';
+import 'package:owl/pages/port/screen/ports.dart';
+import 'package:owl/pages/navigation/screen/navigation.dart';
+import 'package:owl/pages/setup/screen/setup.dart';
+import 'package:owl/pages/configuration/screen/configuration.dart';
+import 'package:owl/pages/servo/screen/servo.dart';
+import 'package:owl/pages/motor/screen/motor.dart';
+import 'package:owl/pages/preset/screen/preset.dart';
+import 'package:owl/pages/model/screen/model.dart';
 void main() => runApp(MaterialApp(
   theme: ThemeData(primaryColor: Colors.black12, fontFamily: 'Lato'),
-  initialRoute: '/vid',
+  initialRoute: '/set',
   routes: {
-    '/': (context) => Setup(),
-    '/fail': (context) => const FailSafe(),
+    '/set': (context) => const Setup(),
+    '/': (context) => Navigation(),
     '/port': (context) => const Ports(),
-    '/poba': (context) => const PowerBattery(),
-    '/conf': (context) => Configuration(),
-    '/vid': (context) => const Video(),
-    '/3d': (context) => const tree_D(),
+    '/bat': (context) => const PowerBattery(),
+    '/conf': (context) => const Configuration(),
     '/ser': (context) => const Servo(),
-    '/tele': (context) => const Tele(),
+    '/mot': (context) => const Motor(),
+    '/pres': (context) => const Preset(),
+    '/mod': (context) => Model(),
   },));
