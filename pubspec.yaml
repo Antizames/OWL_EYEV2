@@ -12,6 +12,7 @@ dependencies:
     sdk: flutter
   latlong2: ^0.8.1
   flutter_map:
+  shared_preferences:
   flutter_map_line_editor:
   google_fonts:
   flutter_usb_serial:
@@ -27,6 +28,8 @@ dependencies:
   font_awesome_flutter:
   flutter_launcher_icons:
   flutter_native_splash:
+  fl_chart:
+  flutter_cube: ^0.1.0
 
 flutter_icons:
   android: true
@@ -50,6 +53,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - Assets/3D/drone.obj
     - Assets/Images/polet.svg
     - Assets/Images/spirali.svg
     - Assets/Images/halfD.svg
@@ -63,6 +67,7 @@ flutter:
     - Assets/Images/orig.svg
     - Assets/Images/Port.svg
     - Assets/Images/Motor.svg
+    - Assets/Images/above.png
     - Assets/Images/OWLogoApp.png
     - Assets/Images/Backowl.png
 
