@@ -86,7 +86,6 @@ class BeeperManager {
       dshotBeaconConditions: dshotBeaconConditions,
     );
   }
-
   void sendToBoard(Uint8List data) {
     // Код команды для настроек пищалки
     const int commandCode = 184; // Уникальный код для команды пищалки

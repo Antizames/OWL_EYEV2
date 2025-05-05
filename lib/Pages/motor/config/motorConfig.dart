@@ -3,98 +3,101 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_msp/flutter_msp.dart';
 
 class MotorConfig {
-  final int minthrottle;
-  final int maxthrottle;
-  final int mincommand;
-  final int motorCount;
+  final int minThrottle;
+  final int maxThrottle;
+  final int minCommand;
   final int motorPoles;
   final bool useDshotTelemetry;
+  final bool motorStop;
   final bool useEscSensor;
+  final int escProtocol;
 
   MotorConfig({
-    this.minthrottle = 0,
-    this.maxthrottle = 0,
-    this.mincommand = 0,
-    this.motorCount = 0,
-    this.motorPoles = 0,
+    this.minThrottle = 1070,
+    this.maxThrottle = 2000,
+    this.minCommand = 1000,
+    this.motorPoles = 14,
     this.useDshotTelemetry = false,
+    this.motorStop = false,
     this.useEscSensor = false,
+    this.escProtocol = 0,
   });
 
+  /// 📦 **Конвертация в MSP-байты**
   Uint8List toBytes() {
     final buffer = BytesBuilder();
 
-    // Параметры моторов (16-битные значения)
-    buffer.addByte(minthrottle & 0xFF);
-    buffer.addByte((minthrottle >> 8) & 0xFF);
-    buffer.addByte(maxthrottle & 0xFF);
-    buffer.addByte((maxthrottle >> 8) & 0xFF);
-    buffer.addByte(mincommand & 0xFF);
-    buffer.addByte((mincommand >> 8) & 0xFF);
+    buffer.addByte(minThrottle & 0xFF);
+    buffer.addByte((minThrottle >> 8) & 0xFF);
+    buffer.addByte(maxThrottle & 0xFF);
+    buffer.addByte((maxThrottle >> 8) & 0xFF);
+    buffer.addByte(minCommand & 0xFF);
+    buffer.addByte((minCommand >> 8) & 0xFF);
 
-    // Параметры моторов (8-битные значения)
-    buffer.addByte(motorCount);
-    buffer.addByte(motorPoles);
-    buffer.addByte(useDshotTelemetry ? 1 : 0);
-    buffer.addByte(useEscSensor ? 1 : 0);
+    buffer.addByte(motorPoles); // 🛠️ Количество полюсов мотора
+    buffer.addByte(useDshotTelemetry ? 1 : 0); // 🛠️ Включение DShot Telemetry
+    buffer.addByte(motorStop ? 1 : 0); // 🛠️ Остановка моторов на холостом ходу
+    buffer.addByte(useEscSensor ? 1 : 0); // 🛠️ Датчик ESC
+    buffer.addByte(escProtocol); // 🛠️ Протокол ESC (PWM, DSHOT и т.д.)
 
     return buffer.toBytes();
   }
 }
 
 class MotorManager {
+  /// 🔄 **Сохранение настроек и отправка**
   Future<void> saveConfig({
-    required int minthrottle,
-    required int maxthrottle,
-    required int mincommand,
-    required int motorCount,
+    required int minThrottle,
+    required int maxThrottle,
+    required int minCommand,
     required int motorPoles,
     required bool useDshotTelemetry,
+    required bool motorStop,
     required bool useEscSensor,
+    required int escProtocol,
   }) async {
     final prefs = await SharedPreferences.getInstance();
 
-    // Сохранение конфигурации в SharedPreferences
-    await prefs.setInt('minthrottle', minthrottle);
-    await prefs.setInt('maxthrottle', maxthrottle);
-    await prefs.setInt('mincommand', mincommand);
-    await prefs.setInt('motorCount', motorCount);
+    await prefs.setInt('minThrottle', minThrottle);
+    await prefs.setInt('maxThrottle', maxThrottle);
+    await prefs.setInt('minCommand', minCommand);
     await prefs.setInt('motorPoles', motorPoles);
     await prefs.setBool('useDshotTelemetry', useDshotTelemetry);
+    await prefs.setBool('motorStop', motorStop);
     await prefs.setBool('useEscSensor', useEscSensor);
+    await prefs.setInt('escProtocol', escProtocol);
 
-    // Создание объекта конфигурации моторов
     final config = MotorConfig(
-      minthrottle: minthrottle,
-      maxthrottle: maxthrottle,
-      mincommand: mincommand,
-      motorCount: motorCount,
+      minThrottle: minThrottle,
+      maxThrottle: maxThrottle,
+      minCommand: minCommand,
       motorPoles: motorPoles,
       useDshotTelemetry: useDshotTelemetry,
+      motorStop: motorStop,
       useEscSensor: useEscSensor,
+      escProtocol: escProtocol,
     );
-
-    // Генерация байтов для отправки
-    final data = config.toBytes();
-    sendToBoard(data);
+    sendToBoard(config.toBytes());
   }
 
+  /// 🔄 **Загрузка настроек из `SharedPreferences`**
   Future<void> loadConfig() async {
     final prefs = await SharedPreferences.getInstance();
 
-    final minthrottle = prefs.getInt('minthrottle') ?? 0;
-    final maxthrottle = prefs.getInt('maxthrottle') ?? 0;
-    final mincommand = prefs.getInt('mincommand') ?? 0;
-    final motorCount = prefs.getInt('motorCount') ?? 0;
-    final motorPoles = prefs.getInt('motorPoles') ?? 0;
+    final minThrottle = prefs.getInt('minThrottle') ?? 1070;
+    final maxThrottle = prefs.getInt('maxThrottle') ?? 2000;
+    final minCommand = prefs.getInt('minCommand') ?? 1000;
+    final motorPoles = prefs.getInt('motorPoles') ?? 14;
     final useDshotTelemetry = prefs.getBool('useDshotTelemetry') ?? false;
-    final useEscSensor = prefs.getBool('useEscSensor') ?? true;
+    final motorStop = prefs.getBool('motorStop') ?? false;
+    final useEscSensor = prefs.getBool('useEscSensor') ?? false;
+    final escProtocol = prefs.getInt('escProtocol') ?? 0;
 
-    print('Loaded Motor Config: minthrottle=$minthrottle, maxthrottle=$maxthrottle, '
-        'mincommand=$mincommand, motorCount=$motorCount, motorPoles=$motorPoles, '
-        'useDshotTelemetry=$useDshotTelemetry, useEscSensor=$useEscSensor');
+    print('Loaded Config: minThrottle=$minThrottle, maxThrottle=$maxThrottle, '
+        'minCommand=$minCommand, motorPoles=$motorPoles, '
+        'useDshotTelemetry=$useDshotTelemetry, motorStop=$motorStop, '
+        'useEscSensor=$useEscSensor, escProtocol=$escProtocol');
   }
-
   void sendToBoard(Uint8List data) {
     // Определяем код команды для моторов
     const int commandCode = 131; // Например, замените на нужный код команды

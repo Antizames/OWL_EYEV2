@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter_msp/flutter_msp.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:owl/pages/configuration/config/rxConfig.dart';
 import 'package:owl/pages/configuration/widgets/rollTextField.dart';
@@ -15,6 +14,8 @@ import 'package:owl/pages/motor/config/pidAdvancedConfig.dart';
 import 'package:owl/pages/configuration/config/boardConfig.dart';
 import 'package:owl/pages/configuration/config/alignmentConfig.dart';
 import 'package:owl/pages/configuration/config/beeperConfig.dart';
+
+import 'package:owl/pages/sideBarMenu/sidebar_menu.dart';
 class Configuration extends StatefulWidget{
   const Configuration({super.key});
   @override
@@ -81,7 +82,7 @@ class ConfigurationState extends State<Configuration> {
             ),
             SlideTransition(
               position: offsetAnimation,
-              child: _buildSidebarMenu(context),
+              child: SidebarMenu(),
             ),
           ],
         );
@@ -89,75 +90,6 @@ class ConfigurationState extends State<Configuration> {
     );
   }
 
-  Widget _buildSidebarMenu(BuildContext context) {
-    return ClipRRect(
-      borderRadius: const BorderRadius.only(
-        topRight: Radius.circular(13), // Применяем скругление к Material
-        bottomRight: Radius.circular(13),
-      ),
-      child: Material(
-        child: Container(
-          width: MediaQuery.of(context).size.width * 0.8,
-          height: MediaQuery.of(context).size.height, // на всю высоту
-          color: Colors.white, // Цвет фона контейнера
-          child: Column(
-            children: [
-              const Padding(padding: EdgeInsets.all(10)),
-              ListTile(
-                leading: const Icon(Icons.navigation),
-                title: const Text('Навигация'),
-                onTap: () {
-                  Navigator.pushReplacementNamed(context, '/');
-                },
-              ),
-              ListTile(
-                leading: Icon(FontAwesomeIcons.microchip),
-                title: Text('Конфигурация'),
-                onTap: () {
-                  Navigator.pushReplacementNamed(context, '/conf');
-                },
-              ),
-              ListTile(
-                leading: Icon(FontAwesomeIcons.phoenixSquadron),
-                title: Text('Дрон'),
-                onTap: () {
-                  Navigator.pushReplacementNamed(context, '/mod');
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.battery_charging_full),
-                title: Text('Питание и Батарея'),
-                onTap: () {
-                  Navigator.pushReplacementNamed(context, '/bat');
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.cable),
-                title: Text('Порты'),
-                onTap: () {
-                  Navigator.pushReplacementNamed(context, '/port');
-                },
-              ),
-              ListTile(
-                leading: Icon(FontAwesomeIcons.gears),
-                title: Text('Сервоприводы'),
-                onTap: () {
-                  Navigator.pushReplacementNamed(context, '/ser');
-                },
-              ),
-              ListTile(
-                leading: Icon(FontAwesomeIcons.fan),
-                title: Text('Моторы'),
-                onTap: () {
-                  Navigator.pushReplacementNamed(context, '/mot');
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
   @override
   void initState() {
     super.initState();
@@ -203,6 +135,7 @@ class ConfigurationState extends State<Configuration> {
       rxLostBeacon: RX_LOST_BEACON, // Сохранение значения RX_LOST_BEACON
       gyroCalibrated: GYRO_CALIBRATED, // Сохранение значения GYRO_CALIBRATED
     );
+
     await nameManager.saveConfig(
       name: _controllerPilot.text,
     );
@@ -212,17 +145,30 @@ class ConfigurationState extends State<Configuration> {
       yaw: yaw.toInt(),
     );
     await sensorManager.saveConfig(
-      accHardware: Accelerometer ? 1: 0,
-      baroHardware: Barometer ? 1: 0,
-      magHardware: Magnetometer ? 1: 0,
+      accHardware: Accelerometer ? 0: 1,
+      baroHardware: Barometer ? 0: 1,
+      magHardware: Magnetometer ? 0: 1,
       sonarHardware: 0,
     );
     await beeperManager.saveConfig(
-      beepers: int.parse('$RX_LOST$RX_SET$RX_LOST_LANDING$RX_LOST_BEACON$GYRO_CALIBRATED', radix: 2),
+      beepers: int.parse(
+          '${RX_LOST ? 1 : 0}${RX_SET ? 1 : 0}${RX_LOST_LANDING ? 1 : 0}${RX_LOST_BEACON ? 1 : 0}${GYRO_CALIBRATED ? 1 : 0}',
+          radix: 2
+      ),
       dshotBeaconTone: beacons[beaconIndex],
-      dshotBeaconConditions: int.parse('110', radix: 2),
+      dshotBeaconConditions: 6, // '110' в двоичной системе = 6
     );
-    await alignManager.savePartialConfig('alignMag', magIndex);
+
+    await alignManager.saveFullConfig(
+        SensorAlignmentConfig(
+          alignGyro: 0,
+          alignAcc: 0,
+          alignMag: 1,
+          gyroToUse: 0,
+          gyro1Align: 0,
+          gyro2Align: 0,
+        )
+    );
     await pidManager.savePartialConfig('gyroSyncDenom', 12);
     await pidManager.savePartialConfig('pidProcessDenom', frequencies[selectedIndex]);
   }
@@ -234,14 +180,35 @@ class ConfigurationState extends State<Configuration> {
     beeperManager.loadConfig();
     final prefs = await SharedPreferences.getInstance();
 
-    roll = prefs.getDouble('roll') ?? 180.0;
-    pitch = prefs.getDouble('pitch') ?? 180.0;
-    yaw = prefs.getDouble('yaw') ?? 180.0;
+    // Проверяем, какой тип данных хранится
+    roll = (prefs.get('roll') is int)
+        ? (prefs.getInt('roll')?.toDouble() ?? 180.0)
+        : (prefs.getDouble('roll') ?? 180.0);
+
+    pitch = (prefs.get('pitch') is int)
+        ? (prefs.getInt('pitch')?.toDouble() ?? 180.0)
+        : (prefs.getDouble('pitch') ?? 180.0);
+
+    yaw = (prefs.get('yaw') is int)
+        ? (prefs.getInt('yaw')?.toDouble() ?? 180.0)
+        : (prefs.getDouble('yaw') ?? 180.0);
+
     Pilot = prefs.getString('pilot') ?? 'Kolobok';
     Craft = prefs.getString('craft') ?? 'Сова';
-    PID = prefs.getInt('pid') ?? 6;
+
+    // Проверяем, что PID действительно int
+    Object? pidValue = prefs.get('pid');
+    if (pidValue is int) {
+      PID = pidValue;
+    } else if (pidValue is String) {
+      PID = int.tryParse(pidValue) ?? 6; // Пробуем парсить строку в число
+    } else {
+      PID = 6; // Значение по умолчанию
+    }
+
     MAG = prefs.getString('mag') ?? "";
     Beacon = prefs.getString('beacon') ?? "";
+
     Accelerometer = prefs.getBool('accelerometer') ?? false;
     Barometer = prefs.getBool('barometer') ?? false;
     Magnetometer = prefs.getBool('magnetometer') ?? false;
@@ -251,6 +218,7 @@ class ConfigurationState extends State<Configuration> {
     RX_LOST_BEACON = prefs.getBool('rxLostBeacon') ?? true;
     GYRO_CALIBRATED = prefs.getBool('gyroCalibrated') ?? true;
   }
+
 
   @override
   Widget build(BuildContext cotext)

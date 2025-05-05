@@ -33,6 +33,7 @@ class NameManager {
   }
   Future<void> loadConfig() async {
     final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('name');
     final name = prefs.getInt('name') ?? 0;
     print('Loaded Mixer Config: name=$name');
   }

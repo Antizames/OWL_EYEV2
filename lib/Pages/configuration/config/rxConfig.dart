@@ -290,7 +290,6 @@ Future<void> loadConfig() async {
 
     print('Loaded RXConfig: $serialrxProvider, $stickMax, $stickCenter, ...');
   }
-
   void sendToBoard(Uint8List data) {
     const int commandCode = 33;  // Укажите свой код команды
     MSPCommunication mspComm = MSPCommunication('COM6');

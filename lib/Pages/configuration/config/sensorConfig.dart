@@ -65,7 +65,6 @@ class SensorManager {
     print('Loaded Sensor Config: accHardware=$accHardware, baroHardware=$baroHardware, '
         'magHardware=$magHardware, sonarHardware=$sonarHardware');
   }
-
   void sendToBoard(Uint8List data) {
     // Определяем код команды для сенсоров
     const int commandCode = 96; // Например, замените на нужный код команды

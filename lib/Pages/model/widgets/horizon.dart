@@ -10,13 +10,13 @@ class AttitudeIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      size: Size(200, 200),
+      size: Size(180, 180),
       painter: OuterCirclePainter(roll: roll),
       child: Padding(
         padding: const EdgeInsets.all(30.0),
         child: ClipOval(
           child: CustomPaint(
-            size: Size(140, 140),
+            size: Size(130, 130),
             painter: AttitudeIndicatorPainter(pitch: pitch, roll: roll),
           ),
         ),

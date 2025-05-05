@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_msp/flutter_msp.dart';
-
 class BoardAlignmentConfig {
   final int roll;
   final int pitch;
@@ -61,7 +60,6 @@ class BoardAlignmentManager {
 
     print('Loaded Board Alignment Config: roll=$roll, pitch=$pitch, yaw=$yaw');
   }
-
   void sendToBoard(Uint8List data) {
     // Определяем код команды для выравнивания платы
     const int commandCode = 39; // Укажите соответствующий код команды

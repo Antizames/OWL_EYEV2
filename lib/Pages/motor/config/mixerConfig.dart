@@ -49,7 +49,6 @@ class MixerManager {
 
     print('Loaded Mixer Config: mixer=$mixer, reverseMotorDir=$reverseMotorDir');
   }
-
   void sendToBoard(Uint8List data) {
     // Определяем код команды (выберите подходящий код для вашей команды)
     const int commandCode = 43; // Например, замените на нужный код команды для миксера

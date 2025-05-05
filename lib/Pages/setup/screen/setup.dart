@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:owl/pages/appBar/widgets/customAppBar.dart';
-
 class Setup extends StatefulWidget {
   const Setup({super.key});
   @override

@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:owl/pages/battery/config/batteryConfig.dart';
 import 'package:owl/pages/battery/config/voltageMeterConfig.dart';
 import 'package:owl/pages/battery/config/amperageMeterConfig.dart';
+import 'package:owl/pages/sideBarMenu/sidebar_menu.dart';
 class PowerBattery extends StatefulWidget{
   const PowerBattery({super.key});
 
@@ -41,80 +42,11 @@ class _PowerBatteryState extends State<PowerBattery> {
             ),
             SlideTransition(
               position: offsetAnimation,
-              child: _buildSidebarMenu(context),
+              child: SidebarMenu(),
             ),
           ],
         );
       },
-    );
-  }
-  Widget _buildSidebarMenu(BuildContext context) {
-    return ClipRRect(
-      borderRadius: const BorderRadius.only(
-        topRight: Radius.circular(13), // Применяем скругление к Material
-        bottomRight: Radius.circular(13),
-      ),
-      child: Material(
-        child: Container(
-          width: MediaQuery.of(context).size.width * 0.8,
-          height: MediaQuery.of(context).size.height, // на всю высоту
-          color: Colors.white, // Цвет фона контейнера
-          child: Column(
-            children: [
-              const Padding(padding: EdgeInsets.all(10)),
-              ListTile(
-                leading: const Icon(Icons.navigation),
-                title: const Text('Навигация'),
-                onTap: () {
-                  Navigator.pushReplacementNamed(context, '/');
-                },
-              ),
-              ListTile(
-                leading: Icon(FontAwesomeIcons.microchip),
-                title: Text('Конфигурация'),
-                onTap: () {
-                  Navigator.pushReplacementNamed(context, '/conf');
-                },
-              ),
-              ListTile(
-                leading: Icon(FontAwesomeIcons.phoenixSquadron),
-                title: Text('Дрон'),
-                onTap: () {
-                  Navigator.pushReplacementNamed(context, '/mod');
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.battery_charging_full),
-                title: Text('Питание и Батарея'),
-                onTap: () {
-                  Navigator.pushReplacementNamed(context, '/bat');
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.cable),
-                title: Text('Порты'),
-                onTap: () {
-                  Navigator.pushReplacementNamed(context, '/port');
-                },
-              ),
-              ListTile(
-                leading: Icon(FontAwesomeIcons.gears),
-                title: Text('Сервоприводы'),
-                onTap: () {
-                  Navigator.pushReplacementNamed(context, '/ser');
-                },
-              ),
-              ListTile(
-                leading: Icon(FontAwesomeIcons.fan),
-                title: Text('Моторы'),
-                onTap: () {
-                  Navigator.pushReplacementNamed(context, '/mot');
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
   final BatteryManager batteryManager = BatteryManager();
@@ -197,8 +129,6 @@ class _PowerBatteryState extends State<PowerBattery> {
     final maxCell = double.parse(_controllerMaxCell.text);
     final warnCell = double.parse(_controllerWarnCell.text);
     final cap = int.parse(_controllerCap.text);
-    final voltageSource = int.parse(_controllerScaleV.text);
-    final currentSource = int.parse(_controllerDiv.text);
     // Используем BatteryManager для сохранения и отправки данных
     await batteryManager.saveConfig(
       minCell: minCell,

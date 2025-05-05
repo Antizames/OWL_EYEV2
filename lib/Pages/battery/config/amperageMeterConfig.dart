@@ -65,15 +65,19 @@ class AmperageMeterManager {
     print('Loaded Amperage Meter Config: $config');
     return config;
   }
-
   void sendToBoard(Uint8List data) {
-    const int commandCode = 41; // Укажите соответствующий код команды для Amperage Meter
+    // Определяем код команды (выберите подходящий код для вашей команды)
+    const int commandCode = 43; // Например, замените на нужный код команды для миксера
     MSPCommunication mspComm = MSPCommunication('COM6');
+    // Отправка данных через mspComm
     print("Payload length: ${data.length}");
     mspComm.sendMessageV1(commandCode, data).then((_) {
-      print('Amperage meter configuration sent successfully.');
+      print('Mixer configuration sent successfully.');
     }).catchError((error) {
-      print('Error sending amperage meter configuration: $error');
+      print('Error sending mixer configuration: $error');
     });
+    if (mspComm.port.isOpen) {
+      mspComm.port.close();
+    }
   }
 }

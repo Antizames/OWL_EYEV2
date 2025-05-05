@@ -65,7 +65,6 @@ class VoltageMeterManager {
     print('Loaded Voltage Meter Config: $config');
     return config;
   }
-
   void sendToBoard(Uint8List data) {
     const int commandCode = 57; // Укажите соответствующий код команды для Voltage Meter
     MSPCommunication mspComm = MSPCommunication('COM6');
@@ -80,3 +79,4 @@ class VoltageMeterManager {
     }
   }
 }
+

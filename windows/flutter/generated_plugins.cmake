@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   flutter_libserialport
   flutter_usb_serial
+  just_audio_windows
   permission_handler_windows
 )
 

@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_msp/flutter_msp.dart';
-import 'package:libserialport/libserialport.dart';
 class BatteryConfig {
   final double minCellVoltage;
   final double maxCellVoltage;
@@ -108,5 +107,4 @@ class BatteryManager {
       mspComm.port.close();
     }
   }
-
 }

@@ -23,14 +23,14 @@ dependencies:
   flutter_popup:
   syncfusion_flutter_charts:
   cupertino_icons: ^1.0.2
-  flutter_msp:
-  flutter_libserialport:
   font_awesome_flutter:
   flutter_launcher_icons:
   flutter_native_splash:
   fl_chart:
   flutter_cube: ^0.1.0
-
+  just_audio:
+  just_audio_windows:
+  flutter_msp:
 flutter_icons:
   android: true
   ios: true
@@ -70,8 +70,58 @@ flutter:
     - Assets/Images/above.png
     - Assets/Images/OWLogoApp.png
     - Assets/Images/Backowl.png
-
-
+    - Assets/Images/kor.png
+    - Assets/Images/review.png
+    - Assets/Images/back.png
+    - Assets/Images/background.png
+    - Assets/Images/fan.png
+    - Assets/Images/front.png
+    - Assets/Images/light.png
+    - Assets/Images/lower_drone.png
+    - Assets/Images/mid.png
+    - Assets/Images/upper_drone.png
+    - Assets/Images/hero/1.png
+    - Assets/Images/hero/2.png
+    - Assets/Images/hero/3.png
+    - Assets/Images/hero/4.png
+    - Assets/Images/hero/5.png
+    - Assets/Images/hero/6.png
+    - Assets/Images/gol/gol1.png
+    - Assets/Images/gol/gol2.png
+    - Assets/Images/gol/gol3.png
+    - Assets/Images/gol/spirtus.png
+    - Assets/Images/gol/spirtusgol.png
+    - Assets/Images/hero/happy.png
+    - Assets/Images/hero/normal.png
+    - Assets/Images/hero/power.png
+    - Assets/Images/hero/angr.png
+    - Assets/Images/hero/udivlena.png
+    - Assets/Images/hero/jckpot.png
+    - Assets/Images/gol/spirt.png
+    - Assets/Images/gol/spirtgol.png
+    - Assets/Images/gol/spirtangry.png
+    - Assets/Images/guys/me.png
+    - Assets/Images/guys/miem.png
+    - Assets/Images/guys/pasha.png
+    - Assets/Images/guys/Semion.png
+    - Assets/Images/spike.png
+    - Assets/Images/up.png
+    - Assets/Images/down.png
+    - Assets/Images/right.png
+    - Assets/Images/left.png
+    - Assets/Images/intro/discord.png
+    - Assets/Images/intro/doroga.png
+    - Assets/Images/intro/metro.png
+    - Assets/Images/intro/miemgo.png
+    - Assets/Images/intro/okno.png
+    - Assets/Images/intro/sigame.png
+    - Assets/Images/intro/sigame_den.png
+    - Assets/Images/intro/edem.png
+    - Assets/sound/911.mp3
+    - Assets/sound/battle.mp3
+    - Assets/sound/calm.mp3
+    - Assets/sound/final.mp3
+    - Assets/sound/leto.mp3
 
   fonts:
     - family: Josefine

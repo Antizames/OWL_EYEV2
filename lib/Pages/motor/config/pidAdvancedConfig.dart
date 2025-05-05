@@ -74,7 +74,19 @@ class PidManager {
     await prefs.setInt(key, value);
     print('Saved $key: $value');
   }
-
+  void sendToBoard(Uint8List data) {
+    const int commandCode = 131;
+    MSPCommunication mspComm = MSPCommunication('COM6');
+    print("Payload length: ${data.length}");
+    mspComm.sendMessageV1(commandCode, data).then((_) {
+      print('PID configuration sent successfully.');
+    }).catchError((error) {
+      print('Error sending PID configuration: $error');
+    });
+    if (mspComm.port.isOpen) {
+      mspComm.port.close();
+    }
+  }
   Future<void> saveFullConfig(PidConfig config) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('gyroSyncDenom', config.gyroSyncDenom);
@@ -120,17 +132,5 @@ class PidManager {
     return config;
   }
 
-  void sendToBoard(Uint8List data) {
-    const int commandCode = 131;
-    MSPCommunication mspComm = MSPCommunication('COM6');
-    print("Payload length: ${data.length}");
-    mspComm.sendMessageV1(commandCode, data).then((_) {
-      print('PID configuration sent successfully.');
-    }).catchError((error) {
-      print('Error sending PID configuration: $error');
-    });
-    if (mspComm.port.isOpen) {
-      mspComm.port.close();
-    }
-  }
+
 }

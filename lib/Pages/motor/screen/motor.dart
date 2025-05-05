@@ -15,6 +15,7 @@ import 'package:owl/pages/appBar/widgets/customAppBar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:owl/config/config.dart';
 
+import 'package:owl/pages/sideBarMenu/sidebar_menu.dart';
 class Motor extends StatefulWidget {
   const Motor({Key? key});
 
@@ -80,80 +81,11 @@ class _MotorState extends State<Motor> {
             ),
             SlideTransition(
               position: offsetAnimation,
-              child: _buildSidebarMenu(context),
+              child: SidebarMenu(),
             ),
           ],
         );
       },
-    );
-  }
-  Widget _buildSidebarMenu(BuildContext context) {
-    return ClipRRect(
-      borderRadius: const BorderRadius.only(
-        topRight: Radius.circular(13), // Применяем скругление к Material
-        bottomRight: Radius.circular(13),
-      ),
-      child: Material(
-        child: Container(
-          width: MediaQuery.of(context).size.width * 0.8,
-          height: MediaQuery.of(context).size.height, // на всю высоту
-          color: Colors.white, // Цвет фона контейнера
-          child: Column(
-            children: [
-              const Padding(padding: EdgeInsets.all(10)),
-              ListTile(
-                leading: const Icon(Icons.navigation),
-                title: const Text('Навигация'),
-                onTap: () {
-                  Navigator.pushReplacementNamed(context, '/');
-                },
-              ),
-              ListTile(
-                leading: Icon(FontAwesomeIcons.microchip),
-                title: Text('Конфигурация'),
-                onTap: () {
-                  Navigator.pushReplacementNamed(context, '/conf');
-                },
-              ),
-              ListTile(
-                leading: Icon(FontAwesomeIcons.phoenixSquadron),
-                title: Text('Дрон'),
-                onTap: () {
-                  Navigator.pushReplacementNamed(context, '/mod');
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.battery_charging_full),
-                title: Text('Питание и Батарея'),
-                onTap: () {
-                  Navigator.pushReplacementNamed(context, '/bat');
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.cable),
-                title: Text('Порты'),
-                onTap: () {
-                  Navigator.pushReplacementNamed(context, '/port');
-                },
-              ),
-              ListTile(
-                leading: Icon(FontAwesomeIcons.gears),
-                title: Text('Сервоприводы'),
-                onTap: () {
-                  Navigator.pushReplacementNamed(context, '/ser');
-                },
-              ),
-              ListTile(
-                leading: Icon(FontAwesomeIcons.fan),
-                title: Text('Моторы'),
-                onTap: () {
-                  Navigator.pushReplacementNamed(context, '/mot');
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
   @override
@@ -210,13 +142,14 @@ class _MotorState extends State<Motor> {
       reverseMotorDir: motorDirection ? 1 : 0,
     );
     await motorManager.saveConfig(
-      minthrottle: 1070,
-      maxthrottle: 2000,
-      mincommand: 1000,
-      motorCount: 3,
-      motorPoles: poles,
+      minThrottle: 1070,
+      maxThrottle: 2000,
+      minCommand: 1000,
+      escProtocol: 8, // Например, DSHOT600 (зависит от протокола)
+      motorPoles: 3,
       useDshotTelemetry: bidirDshot,
       useEscSensor: escSensor,
+      motorStop: motorStop,
     );
     await pidManager.saveFullConfig(
       PidConfig(

@@ -11,6 +11,26 @@ class SerialPortConfig {
   final int telemetryBaudrate;
   final int blackboxBaudrate;
 
+  static const List<int> baudRates = [
+    0,        // "AUTO" (используется как 0)
+    9600,
+    19200,
+    38400,
+    57600,
+    115200,
+    230400,
+    250000,
+    400000,
+    460800,
+    500000,
+    921600,
+    1000000,
+    1500000,
+    2000000,
+    2470000,
+  ];
+
+
   SerialPortConfig({
     required this.identifier,
     required this.auxChannelIndex,
@@ -21,31 +41,76 @@ class SerialPortConfig {
     required this.blackboxBaudrate,
   });
 
-  Uint8List toBytes(List<int> baudRates) {
+  Uint8List toBytes() {
     final buffer = BytesBuilder();
 
     buffer.addByte(identifier);
-    buffer.add(_functionsToMask(functions));
-    buffer.addByte(baudRates.indexOf(mspBaudrate));
-    buffer.addByte(baudRates.indexOf(gpsBaudrate));
-    buffer.addByte(baudRates.indexOf(telemetryBaudrate));
-    buffer.addByte(baudRates.indexOf(blackboxBaudrate));
+    final functionMask = _functionsToMask(functions);
+    buffer.add(functionMask);
+    buffer.addByte(_baudRateToIndex(mspBaudrate));
+    buffer.addByte(_baudRateToIndex(gpsBaudrate));
+    buffer.addByte(_baudRateToIndex(telemetryBaudrate));
+    buffer.addByte(_baudRateToIndex(blackboxBaudrate));
+    print("🛠️ MSP Baudrate: ${_baudRateToIndex(mspBaudrate)}");
+    print("🛰️ GPS Baudrate: ${_baudRateToIndex(gpsBaudrate)}");
+    print("📡 Telemetry Baudrate: ${_baudRateToIndex(telemetryBaudrate)}");
+    print("📦 Blackbox Baudrate: ${_baudRateToIndex(blackboxBaudrate)}");
 
+
+    Uint8List result = buffer.toBytes();
+    print("📜 Данные для отправки: ${result.toList()}");
+    return result;
+  }
+
+  static Uint8List _functionsToMask(List<String> functions) {
+    const functionMap = {
+      "MSP": 0,
+      "GPS": 1,
+      "TELEMETRY_FRSKY": 2,
+      "TELEMETRY_HOTT": 3,
+      "TELEMETRY_MSP": 4,
+      "TELEMETRY_LTM": 4, // LTM заменяет MSP
+      "TELEMETRY_SMARTPORT": 5,
+      "RX_SERIAL": 6,
+      "BLACKBOX": 7,
+      "TELEMETRY_MAVLINK": 9,
+      "ESC_SENSOR": 10,
+      "TBS_SMARTAUDIO": 11,
+      "TELEMETRY_IBUS": 12,
+      "IRC_TRAMP": 13,
+      "RUNCAM_DEVICE_CONTROL": 14,
+      "LIDAR_TF": 15,
+      "FRSKY_OSD": 16,
+      "VTX_MSP": 17,
+    };
+
+    int mask = 0;
+    for (var func in functions) {
+      if (functionMap.containsKey(func)) {
+        mask |= (1 << functionMap[func]!);
+      }
+    }
+
+    final buffer = BytesBuilder();
+    buffer.addByte(mask & 0xFF); // младший байт
+    buffer.addByte((mask >> 8) & 0xFF); // старший байт (если нужно)
+
+    print("🔹 Маска функций: ${buffer.toBytes().toList()} (${functions.join(', ')})");
     return buffer.toBytes();
   }
 
-  Uint8List _functionsToMask(List<String> functions) {
-    final functionMap = {
-      "MSP": 0x01,
-      "GPS": 0x02,
-      "TELEMETRY": 0x04,
-      "BLACKBOX": 0x08,
-    };
-    int mask = 0;
-    for (var func in functions) {
-      mask |= functionMap[func] ?? 0;
-    }
-    return Uint8List(2)..buffer.asByteData().setUint16(0, mask, Endian.big);
+
+  static int _baudRateToIndex(int baudRate) {
+    final index = baudRates.indexOf(baudRate);
+    return index != -1 ? index : 0; // Если нет совпадения, возвращаем "AUTO" (0)
+  }
+
+
+  @override
+  String toString() {
+    return 'SerialPortConfig(identifier: $identifier, functions: $functions, '
+        'mspBaudrate: $mspBaudrate, gpsBaudrate: $gpsBaudrate, '
+        'telemetryBaudrate: $telemetryBaudrate, blackboxBaudrate: $blackboxBaudrate)';
   }
 }
 
@@ -55,6 +120,7 @@ class SerialConfigManager {
   Future<void> saveConfig() async {
     final prefs = await SharedPreferences.getInstance();
 
+    await prefs.setInt('ports_count', ports.length);
     for (var i = 0; i < ports.length; i++) {
       final port = ports[i];
       await prefs.setInt('port_${i}_identifier', port.identifier);
@@ -66,15 +132,13 @@ class SerialConfigManager {
       await prefs.setInt('port_${i}_blackboxBaudrate', port.blackboxBaudrate);
     }
 
-    // Сохраняем количество портов
-    await prefs.setInt('ports_count', ports.length);
+    print('✅ Порты сохранены');
   }
 
   Future<void> loadConfig() async {
     final prefs = await SharedPreferences.getInstance();
-
     final portCount = prefs.getInt('ports_count') ?? 0;
-    ports.clear(); // Убедимся, что список портов пуст перед загрузкой
+    ports.clear();
 
     for (var i = 0; i < portCount; i++) {
       final identifier = prefs.getInt('port_${i}_identifier') ?? 0;
@@ -98,55 +162,26 @@ class SerialConfigManager {
       );
     }
 
-    print('Loaded ${ports.length} ports from preferences.');
+    print('✅ Загружено ${ports.length} портов');
     for (var port in ports) {
-      print('Port: $port');
+      print('🔹 $port');
     }
   }
 
   void sendConfig() {
+    if (ports.isEmpty) {
+      print('⚠️ Нет данных для отправки.');
+      return;
+    }
+
     final buffer = BytesBuilder();
-
     for (var port in ports) {
-      buffer.addByte(port.identifier);
-
-      // Преобразуем функции в битовую маску
-      final functionMask = _functionsToMask(port.functions);
-      buffer.addByte(functionMask & 0xFF);
-      buffer.addByte((functionMask >> 8) & 0xFF);
-
-      // Добавляем скорость передачи для каждого режима
-      buffer.addByte(_baudRateToIndex(port.mspBaudrate));
-      buffer.addByte(_baudRateToIndex(port.gpsBaudrate));
-      buffer.addByte(_baudRateToIndex(port.telemetryBaudrate));
-      buffer.addByte(_baudRateToIndex(port.blackboxBaudrate));
+      buffer.add(port.toBytes());
     }
 
     final data = buffer.toBytes();
     sendToBoard(data);
   }
-
-  int _functionsToMask(List<String> functions) {
-    // Пример преобразования функций в битовую маску
-    const functionMap = {
-      "MSP": 0x01,
-      "GPS": 0x02,
-      "TELEMETRY": 0x04,
-      "BLACKBOX": 0x08,
-    };
-    int mask = 0;
-    for (var func in functions) {
-      mask |= functionMap[func] ?? 0;
-    }
-    return mask;
-  }
-
-  int _baudRateToIndex(int baudRate) {
-    // Пример: преобразование скорости передачи в индекс
-    const baudRates = [9600, 19200, 38400, 57600, 115200];
-    return baudRates.indexOf(baudRate);
-  }
-
   void sendToBoard(Uint8List data) {
     const int commandCode = 55; // Код команды
     MSPCommunication mspComm = MSPCommunication('COM6');
@@ -159,4 +194,3 @@ class SerialConfigManager {
     });
   }
 }
-

@@ -6,7 +6,6 @@ class SensorAlignmentConfig {
   final int? alignGyro;
   final int? alignAcc;
   final int? alignMag;
-  final int? gyroDetectionFlags;
   final int? gyroToUse;
   final int? gyro1Align;
   final int? gyro2Align;
@@ -15,7 +14,6 @@ class SensorAlignmentConfig {
     this.alignGyro,
     this.alignAcc,
     this.alignMag,
-    this.gyroDetectionFlags,
     this.gyroToUse,
     this.gyro1Align,
     this.gyro2Align,
@@ -32,7 +30,6 @@ class SensorAlignmentConfig {
     addValue(alignGyro);
     addValue(alignAcc);
     addValue(alignMag);
-    addValue(gyroDetectionFlags);
     addValue(gyroToUse);
     addValue(gyro1Align);
     addValue(gyro2Align);
@@ -61,9 +58,6 @@ class SensorAlignmentManager {
     if (config.alignMag != null) {
       await prefs.setInt('alignMag', config.alignMag!);
     }
-    if (config.gyroDetectionFlags != null) {
-      await prefs.setInt('gyroDetectionFlags', config.gyroDetectionFlags!);
-    }
     if (config.gyroToUse != null) {
       await prefs.setInt('gyroToUse', config.gyroToUse!);
     }
@@ -73,7 +67,13 @@ class SensorAlignmentManager {
     if (config.gyro2Align != null) {
       await prefs.setInt('gyro2Align', config.gyro2Align!);
     }
-
+    print('Loaded Sensor Alignment Config:');
+    print('alignGyro: ${config.alignGyro}');
+    print('alignAcc: ${config.alignAcc}');
+    print('alignMag: ${config.alignMag}');
+    print('gyroToUse: ${config.gyroToUse}');
+    print('gyro1Align: ${config.gyro1Align}');
+    print('gyro2Align: ${config.gyro2Align}');
     final data = config.toBytes();
     sendToBoard(data);
   }
@@ -85,16 +85,13 @@ class SensorAlignmentManager {
       alignGyro: prefs.getInt('alignGyro'),
       alignAcc: prefs.getInt('alignAcc'),
       alignMag: prefs.getInt('alignMag'),
-      gyroDetectionFlags: prefs.getInt('gyroDetectionFlags'),
       gyroToUse: prefs.getInt('gyroToUse'),
       gyro1Align: prefs.getInt('gyro1Align'),
       gyro2Align: prefs.getInt('gyro2Align'),
     );
-
-    print('Loaded Sensor Alignment Config: $config');
     return config;
-  }
 
+  }
   void sendToBoard(Uint8List data) {
     const int commandCode = 126; // Укажите соответствующий код команды
     MSPCommunication mspComm = MSPCommunication('COM6');
@@ -105,4 +102,5 @@ class SensorAlignmentManager {
       print('Error sending sensor alignment configuration: $error');
     });
   }
+
 }
